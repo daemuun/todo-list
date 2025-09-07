@@ -1,0 +1,7 @@
+package com.example.todolist.data
+
+import com.example.todolist.model.Todo
+
+data class TodoListUiState(
+    val todoList: Map<String, Todo>
+)
