@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ import com.example.todolist.ui.theme.TodoListTheme
 fun TodoListScreen(
     todos: Map<String, Todo>,
     onChangeTextClick: (String) -> Unit,
-    onDoneButtonClick: (String) -> Unit,
+    onChangeStatusButtonClick: (String) -> Unit,
     onDeleteButtonClick: (String) -> Unit,
     onAddButtonClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -49,7 +50,7 @@ fun TodoListScreen(
                 todo = todo.second,
                 id = todo.first,
                 onChangeTextClick = onChangeTextClick,
-                onDoneButtonClick = onDoneButtonClick,
+                onChangeStatusButtonClick = onChangeStatusButtonClick,
                 onDeleteButtonClick = onDeleteButtonClick,
                 modifier = Modifier.padding(12.dp)
             )
@@ -88,7 +89,7 @@ fun TodoItem(
     todo: Todo,
     id: String,
     onDeleteButtonClick: (String) -> Unit,
-    onDoneButtonClick: (String) -> Unit,
+    onChangeStatusButtonClick: (String) -> Unit,
     onChangeTextClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -113,13 +114,14 @@ fun TodoItem(
                     .clip(MaterialTheme.shapes.small)
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .shadow(1.dp, shape = MaterialTheme.shapes.small),
-                id = id
+                id = id,
+                completed = todo.completed
             )
             ActionButton(
                 icon = Icons.Filled.Done,
-                contentDescription = stringResource(R.string.done_btn),
+                contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(R.string.done_btn),
                 color = Color.Green,
-                onActionButtonClick = onDoneButtonClick,
+                onActionButtonClick = onChangeStatusButtonClick,
                 id = id
             )
         }
@@ -130,6 +132,7 @@ fun TodoItem(
 fun TodoTitle(
     title: String,
     id: String,
+    completed: Boolean,
     onChangeTextClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -138,10 +141,18 @@ fun TodoTitle(
             text = title,
             modifier = Modifier
                 .clickable(onClick = { onChangeTextClick(id) })
-                .padding(all = 6.dp),
+                .fillMaxWidth()
+                .padding(all = 6.dp)
+                .background(MaterialTheme.colorScheme.primaryContainer),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleMedium
+            style = if (completed) {
+                MaterialTheme.typography.titleMedium.copy(
+                    textDecoration = TextDecoration.LineThrough
+                )
+            } else {
+                MaterialTheme.typography.titleMedium
+            }
         )
     }
 }
@@ -180,7 +191,7 @@ fun TodoListScreenPreview() {
     TodoListTheme {
         TodoListScreen(
             todos = mapOf(
-                "1" to Todo("Подготовить отчет за квартал"),
+                "1" to Todo("Подготовить отчет за квартал", completed = true),
                 "2" to Todo("Забрать посылку с почты"),
                 "3" to Todo("Записаться на курсы английского"),
                 "4" to Todo("Купить подарок на день рождения"),
@@ -189,7 +200,7 @@ fun TodoListScreenPreview() {
                 "7" to Todo("Протестировать новое приложение"),
             ),
             onAddButtonClick = {},
-            onDoneButtonClick = {},
+            onChangeStatusButtonClick = {},
             onChangeTextClick = {},
             onDeleteButtonClick = {},
             modifier = Modifier.fillMaxSize()
@@ -204,7 +215,7 @@ fun TodoItemPrewiew() {
         TodoItem(
             todo = Todo("Подготовить отчет за квартал"),
             onChangeTextClick = {},
-            onDoneButtonClick = {},
+            onChangeStatusButtonClick = {},
             onDeleteButtonClick = {},
             id = "1"
         )

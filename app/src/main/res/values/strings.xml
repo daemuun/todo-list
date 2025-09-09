@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Todo List</string>
+    <string name="new_task_btn">Новая задача</string>
+    <string name="delete_btn">Удалить задачу</string>
+    <string name="done_btn">Пометить задачу как выполненную</string>
+    <string name="no_done_btn">Пометить задачу как невыполненную</string>
 </resources>

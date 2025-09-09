@@ -11,20 +11,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.UUID
 
-class TodoListViewModel(private val todoListRepository: TodoListRepository = TodoListRepositoryImpl()): ViewModel() {
-    private val allTodo: Map<String, Todo> = todoListRepository.getAllTodo()
-    private val _uiState = MutableStateFlow(TodoListUiState(allTodo))
+class TodoListViewModel(
+    private val todoListRepository: TodoListRepository = TodoListRepositoryImpl()
+): ViewModel() {
+    private val _uiState = MutableStateFlow(TodoListUiState(todoListRepository.getAllTodo()))
 
     val uiState = _uiState.asStateFlow()
 
-    fun createTodo(newTodo: Todo) {
-        val randId: String = generateId()
-        todoListRepository.createTodo(randId, newTodo)
-        updateUiState()
-    }
-
-    fun updateTodo(id: String, newTodo: Todo) {
-        todoListRepository.updateTodo(id, newTodo)
+    fun createTodo() {
+        todoListRepository.createTodo()
         updateUiState()
     }
 
@@ -33,13 +28,21 @@ class TodoListViewModel(private val todoListRepository: TodoListRepository = Tod
         updateUiState()
     }
 
+    fun changeTodoStatus(id: String) {
+        todoListRepository.changeTodoStatus(id)
+        updateUiState()
+    }
+
+    fun changeTodoTitle(id: String, newTitle: String) {
+        todoListRepository.changeTodoTitle(id, newTitle)
+        updateUiState()
+    }
+
     private fun updateUiState() {
         _uiState.update { currentState ->
             currentState.copy(todoListRepository.getAllTodo())
         }
     }
-
-    private fun generateId() = UUID.randomUUID().toString()
 }
 
 
