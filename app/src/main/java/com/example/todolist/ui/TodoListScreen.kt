@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,8 +33,51 @@ import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
 
 @Composable
-fun TodoListScreen(todos: List<Todo>, modifier: Modifier = Modifier) {
+fun TodoListScreen(
+    todos: List<Todo>,
+    onChangeTextClick: () -> Unit,
+    onDoneButtonClick: () -> Unit,
+    onDeleteButtonClick: () -> Unit,
+    onAddButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(modifier = modifier) {
+        items(todos) { todo ->
+            TodoItem(
+                todo = todo,
+                onChangeTextClick = onChangeTextClick,
+                onDoneButtonClick = onDoneButtonClick,
+                onDeleteButtonClick = onDeleteButtonClick,
+                modifier = Modifier.padding(12.dp)
+            )
+        }
 
+        item {
+            AddButton(
+                onAddButtonClick = onAddButtonClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            )
+        }
+    }
+}
+
+
+@Composable
+fun AddButton(
+    onAddButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onAddButtonClick,
+        modifier = modifier
+    ) {
+        Text(
+            text = "Новая задача",
+            style = MaterialTheme.typography.titleLarge
+        )
+    }
 }
 
 @Composable
@@ -61,7 +106,8 @@ fun TodoItem(
                 modifier = Modifier
                     .weight(1f)
                     .clip(MaterialTheme.shapes.small)
-                    .background(Color(0xfff2fbf8))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .shadow(1.dp, shape = MaterialTheme.shapes.small)
             )
             ActionButton(
                 icon = Icons.Filled.Done,
@@ -119,11 +165,26 @@ fun ActionButton(
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun TodoListScreenPrewiew() {
+fun TodoListScreenPreview() {
     TodoListTheme {
-        TodoListScreen(todos = listOf<Todo>())
+        TodoListScreen(
+            todos = listOf(
+                Todo("Подготовить отчет за квартал"),
+                Todo("Забрать посылку с почты"),
+                Todo("Записаться на курсы английского"),
+                Todo("Купить подарок на день рождения"),
+                Todo("Починить кран на кухне"),
+                Todo("Сходить в спортзал"),
+                Todo("Протестировать новое приложение"),
+            ),
+            onAddButtonClick = {},
+            onDoneButtonClick = {},
+            onChangeTextClick = {},
+            onDeleteButtonClick = {},
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -132,7 +193,7 @@ fun TodoListScreenPrewiew() {
 fun TodoItemPrewiew() {
     TodoListTheme {
         TodoItem(
-            todo = Todo("asdasdafsdfnksdnfdsbgmnsdbgnmsbdgmnsf"),
+            todo = Todo("Подготовить отчет за квартал"),
             onChangeTextClick = {},
             onDoneButtonClick = {},
             onDeleteButtonClick = {}
