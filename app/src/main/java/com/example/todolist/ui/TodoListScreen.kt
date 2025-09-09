@@ -140,35 +140,6 @@ fun TodoItem(
     }
 }
 
-@Composable
-fun TodoTitle(
-    title: String,
-    id: String,
-    completed: Boolean,
-    onChangeTextClick: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier) {
-        Text(
-            text = title,
-            modifier = Modifier
-                .clickable(onClick = { onChangeTextClick(id) })
-                .fillMaxWidth()
-                .padding(all = 6.dp)
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = if (completed) {
-                MaterialTheme.typography.titleMedium.copy(
-                    textDecoration = TextDecoration.LineThrough
-                )
-            } else {
-                MaterialTheme.typography.titleMedium
-            }
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun TodoListScreenPreview() {
