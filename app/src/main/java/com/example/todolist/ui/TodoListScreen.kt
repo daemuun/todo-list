@@ -22,10 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -93,37 +90,52 @@ fun TodoItem(
     onChangeTextClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier) {
+    Card(
+        modifier = modifier
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         ) {
-            ActionButton(
-                icon = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.delete_btn),
-                color = Color.Red,
-                onActionButtonClick = onDeleteButtonClick,
-                id = id
-            )
-            TodoTitle(
-                title = todo.title,
-                onChangeTextClick = onChangeTextClick,
+            IconButton(
+                onClick = { onDeleteButtonClick(id) }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.delete_btn),
+                    tint = Color.Red
+                )
+            }
+
+            Text(
+                text = todo.title,
                 modifier = Modifier
                     .weight(1f)
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .shadow(1.dp, shape = MaterialTheme.shapes.small),
-                id = id,
-                completed = todo.completed
+                    .clickable { onChangeTextClick(id) }
+                    .padding(8.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = if (todo.completed) {
+                    MaterialTheme.typography.titleMedium.copy(
+                        textDecoration = TextDecoration.LineThrough
+                    )
+                } else {
+                    MaterialTheme.typography.titleMedium
+                }
             )
-            ActionButton(
-                icon = Icons.Filled.Done,
-                contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(R.string.done_btn),
-                color = Color.Green,
-                onActionButtonClick = onChangeStatusButtonClick,
-                id = id
-            )
+
+            IconButton(
+                onClick = { onChangeStatusButtonClick(id) }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(R.string.done_btn),
+                    tint = Color.Green
+                )
+            }
         }
     }
 }
@@ -156,34 +168,6 @@ fun TodoTitle(
         )
     }
 }
-
-@Composable
-fun ActionButton(
-    id: String,
-    icon: ImageVector,
-    contentDescription: String?,
-    color: Color,
-    onActionButtonClick: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    IconButton(
-        onClick = { onActionButtonClick(id) },
-        modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
-                .background(color)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                modifier = Modifier.padding(4.dp)
-            )
-        }
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable
