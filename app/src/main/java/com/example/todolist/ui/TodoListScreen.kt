@@ -34,17 +34,18 @@ import com.example.todolist.ui.theme.TodoListTheme
 
 @Composable
 fun TodoListScreen(
-    todos: List<Todo>,
-    onChangeTextClick: () -> Unit,
-    onDoneButtonClick: () -> Unit,
-    onDeleteButtonClick: () -> Unit,
+    todos: Map<String, Todo>,
+    onChangeTextClick: (String) -> Unit,
+    onDoneButtonClick: (String) -> Unit,
+    onDeleteButtonClick: (String) -> Unit,
     onAddButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
-        items(todos) { todo ->
+        items(todos.toList()) { todo ->
             TodoItem(
-                todo = todo,
+                todo = todo.second,
+                id = todo.first,
                 onChangeTextClick = onChangeTextClick,
                 onDoneButtonClick = onDoneButtonClick,
                 onDeleteButtonClick = onDeleteButtonClick,
@@ -83,9 +84,10 @@ fun AddButton(
 @Composable
 fun TodoItem(
     todo: Todo,
-    onDeleteButtonClick: () -> Unit,
-    onDoneButtonClick: () -> Unit,
-    onChangeTextClick: () -> Unit,
+    id: String,
+    onDeleteButtonClick: (String) -> Unit,
+    onDoneButtonClick: (String) -> Unit,
+    onChangeTextClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(modifier = modifier) {
@@ -98,7 +100,8 @@ fun TodoItem(
                 icon = Icons.Filled.Close,
                 contentDescription = "",
                 color = Color.Red,
-                onActionButtonClick = onDeleteButtonClick
+                onActionButtonClick = onDeleteButtonClick,
+                id = id
             )
             TodoTitile(
                 title = todo.title,
@@ -107,13 +110,15 @@ fun TodoItem(
                     .weight(1f)
                     .clip(MaterialTheme.shapes.small)
                     .background(MaterialTheme.colorScheme.primaryContainer)
-                    .shadow(1.dp, shape = MaterialTheme.shapes.small)
+                    .shadow(1.dp, shape = MaterialTheme.shapes.small),
+                id = id
             )
             ActionButton(
                 icon = Icons.Filled.Done,
                 contentDescription = "",
                 color = Color.Green,
-                onActionButtonClick = onDoneButtonClick
+                onActionButtonClick = onDoneButtonClick,
+                id = id
             )
         }
     }
@@ -122,14 +127,15 @@ fun TodoItem(
 @Composable
 fun TodoTitile(
     title: String,
-    onChangeTextClick: () -> Unit,
+    id: String,
+    onChangeTextClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         Text(
             text = title,
             modifier = Modifier
-                .clickable(onClick = onChangeTextClick)
+                .clickable(onClick = { onChangeTextClick(id) })
                 .padding(all = 6.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -140,14 +146,15 @@ fun TodoTitile(
 
 @Composable
 fun ActionButton(
+    id: String,
     icon: ImageVector,
     contentDescription: String?,
     color: Color,
-    onActionButtonClick: () -> Unit,
+    onActionButtonClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     IconButton(
-        onClick = onActionButtonClick,
+        onClick = { onActionButtonClick(id) },
         modifier = modifier
     ) {
         Box(
@@ -170,14 +177,14 @@ fun ActionButton(
 fun TodoListScreenPreview() {
     TodoListTheme {
         TodoListScreen(
-            todos = listOf(
-                Todo("Подготовить отчет за квартал"),
-                Todo("Забрать посылку с почты"),
-                Todo("Записаться на курсы английского"),
-                Todo("Купить подарок на день рождения"),
-                Todo("Починить кран на кухне"),
-                Todo("Сходить в спортзал"),
-                Todo("Протестировать новое приложение"),
+            todos = mapOf(
+                "1" to Todo("Подготовить отчет за квартал"),
+                "2" to Todo("Забрать посылку с почты"),
+                "3" to Todo("Записаться на курсы английского"),
+                "4" to Todo("Купить подарок на день рождения"),
+                "5" to Todo("Починить кран на кухне"),
+                "6" to Todo("Сходить в спортзал"),
+                "7" to Todo("Протестировать новое приложение"),
             ),
             onAddButtonClick = {},
             onDoneButtonClick = {},
@@ -196,7 +203,8 @@ fun TodoItemPrewiew() {
             todo = Todo("Подготовить отчет за квартал"),
             onChangeTextClick = {},
             onDoneButtonClick = {},
-            onDeleteButtonClick = {}
+            onDeleteButtonClick = {},
+            id = "1"
         )
     }
 }
