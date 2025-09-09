@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
@@ -19,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.todolist.model.Todo
@@ -51,9 +55,13 @@ fun TodoItem(
                 color = Color.Red,
                 onActionButtonClick = onDeleteButtonClick
             )
-            Text(
-                text = todo.title,
-                modifier = Modifier.clickable(onClick = onChangeTextClick)
+            TodoTitile(
+                title = todo.title,
+                onChangeTextClick = onChangeTextClick,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(MaterialTheme.shapes.small)
+                    .background(Color(0xfff2fbf8))
             )
             ActionButton(
                 icon = Icons.Filled.Done,
@@ -62,6 +70,25 @@ fun TodoItem(
                 onActionButtonClick = onDoneButtonClick
             )
         }
+    }
+}
+
+@Composable
+fun TodoTitile(
+    title: String,
+    onChangeTextClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        Text(
+            text = title,
+            modifier = Modifier
+                .clickable(onClick = onChangeTextClick)
+                .padding(all = 6.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }
 
@@ -105,7 +132,7 @@ fun TodoListScreenPrewiew() {
 fun TodoItemPrewiew() {
     TodoListTheme {
         TodoItem(
-            todo = Todo("asdasdasf"),
+            todo = Todo("asdasdafsdfnksdnfdsbgmnsdbgnmsbdgmnsf"),
             onChangeTextClick = {},
             onDoneButtonClick = {},
             onDeleteButtonClick = {}
