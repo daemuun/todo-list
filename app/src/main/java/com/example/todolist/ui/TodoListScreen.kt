@@ -26,9 +26,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.todolist.R
 import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
 
@@ -75,7 +77,7 @@ fun AddButton(
         modifier = modifier
     ) {
         Text(
-            text = "Новая задача",
+            text = stringResource(R.string.new_task_btn),
             style = MaterialTheme.typography.titleLarge
         )
     }
@@ -98,12 +100,12 @@ fun TodoItem(
         ) {
             ActionButton(
                 icon = Icons.Filled.Close,
-                contentDescription = "",
+                contentDescription = stringResource(R.string.delete_btn),
                 color = Color.Red,
                 onActionButtonClick = onDeleteButtonClick,
                 id = id
             )
-            TodoTitile(
+            TodoTitle(
                 title = todo.title,
                 onChangeTextClick = onChangeTextClick,
                 modifier = Modifier
@@ -115,7 +117,7 @@ fun TodoItem(
             )
             ActionButton(
                 icon = Icons.Filled.Done,
-                contentDescription = "",
+                contentDescription = stringResource(R.string.done_btn),
                 color = Color.Green,
                 onActionButtonClick = onDoneButtonClick,
                 id = id
@@ -125,7 +127,7 @@ fun TodoItem(
 }
 
 @Composable
-fun TodoTitile(
+fun TodoTitle(
     title: String,
     id: String,
     onChangeTextClick: (String) -> Unit,
