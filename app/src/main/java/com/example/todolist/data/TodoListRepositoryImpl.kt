@@ -22,7 +22,7 @@ class TodoListRepositoryImpl: TodoListRepository {
 
     override fun changeTodoStatus(id: String): Map<String, Todo> {
         todoList[id]?.let { currentTodo ->
-            currentTodo.copy(
+            todoList[id] = currentTodo.copy(
                 completed = !currentTodo.completed,
                 updatedAt = LocalDateTime.now()
             )
