@@ -38,9 +38,6 @@ fun ChangeTodoScreen(
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.padding_medium)),
             label = {Text(text = stringResource(R.string.change_title_label))},
-            keyboardActions = KeyboardActions(
-                onDone = { onTodoTitleSaveClick(todoId) }
-            ),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
