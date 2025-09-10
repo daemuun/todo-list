@@ -9,22 +9,26 @@ class TodoListRepositoryImpl: TodoListRepository {
         return todoList
     }
 
-    override fun deleteTodo(id: String) {
+    override fun deleteTodo(id: String): Map<String, Todo> {
         todoList.remove(id)
+        return todoList
     }
 
-    override fun createTodo() {
+    override fun createTodo(): Map<String, Todo> {
         todoList.put(generateId(), Todo())
+        return todoList
     }
 
-    override fun changeTodoStatus(id: String) {
+    override fun changeTodoStatus(id: String): Map<String, Todo> {
         todoList[id]?.completed?.let { todoList[id]?.completed = !it }
         todoList[id]?.updatedAt = LocalDateTime.now()
+        return todoList
     }
 
-    override fun changeTodoTitle(id: String, newTitle: String) {
+    override fun changeTodoTitle(id: String, newTitle: String): Map<String, Todo> {
         todoList[id]?.title = newTitle
         todoList[id]?.updatedAt = LocalDateTime.now()
+        return todoList
     }
 }
 
