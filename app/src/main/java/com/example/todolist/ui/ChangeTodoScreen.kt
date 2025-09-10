@@ -12,12 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.todolist.R
 import com.example.todolist.ui.theme.TodoListTheme
 
@@ -38,14 +36,15 @@ fun ChangeTodoScreen(
             onValueChange = { onTodoTitleChange(it) },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(dimensionResource(R.dimen.padding_medium))
-                .clip(MaterialTheme.shapes.small),
+                .padding(dimensionResource(R.dimen.padding_medium)),
+            label = {Text(text = stringResource(R.string.change_title_label))},
             keyboardActions = KeyboardActions(
                 onDone = { onTodoTitleSaveClick(todoId) }
             ),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
-            )
+            ),
+            shape = MaterialTheme.shapes.large
         )
         Button(
             onClick = { onTodoTitleSaveClick(todoId) },

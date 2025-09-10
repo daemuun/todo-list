@@ -5,4 +5,5 @@
     <string name="done_btn">Пометить задачу как выполненную</string>
     <string name="no_done_btn">Пометить задачу как невыполненную</string>
     <string name="save_btn">Сохранить</string>
+    <string name="change_title_label">Введите текст задачи</string>
 </resources>
