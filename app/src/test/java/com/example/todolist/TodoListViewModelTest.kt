@@ -21,4 +21,18 @@ class TodoListViewModelTest {
 
         assertEquals(expectedSize, actualSize)
     }
+
+    @Test
+    fun testDeleteTodoItem() {
+        viewModel.createTodo()
+        var currentUiState = viewModel.uiState.value
+        val expectedSize = currentUiState.todoList.size - 1
+
+        viewModel.deleteTodo(currentUiState.todoList.keys.first())
+
+        currentUiState = viewModel.uiState.value
+        val actualSize = currentUiState.todoList.size
+
+        assertEquals(expectedSize, actualSize)
+    }
 }
