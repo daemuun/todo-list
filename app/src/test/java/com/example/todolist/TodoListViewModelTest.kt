@@ -35,4 +35,19 @@ class TodoListViewModelTest {
 
         assertEquals(expectedSize, actualSize)
     }
+
+    @Test
+    fun testChangeTodoStatusToDone() {
+        viewModel.createTodo()
+        var currentUiState = viewModel.uiState.value
+        val todoId = currentUiState.todoList.keys.first()
+        val expectedStatus = true
+
+        viewModel.changeTodoStatus(todoId)
+
+        currentUiState = viewModel.uiState.value
+        val actualStatus = currentUiState.todoList[todoId]?.completed
+
+        assertEquals(expectedStatus, actualStatus)
+    }
 }
