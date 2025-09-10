@@ -41,7 +41,7 @@ fun ChangeTodoScreen(
                 .padding(dimensionResource(R.dimen.padding_medium))
                 .clip(MaterialTheme.shapes.small),
             keyboardActions = KeyboardActions(
-                onDone = { KeyboardActions.Default.onDone }
+                onDone = { onTodoTitleSaveClick(todoId) }
             ),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
