@@ -1,6 +1,6 @@
 package com.example.todolist.ui
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -132,22 +132,26 @@ fun TodoItem(
 
             IconButton(
                 onClick = { onChangeStatusButtonClick(id) },
+                modifier = Modifier.then(
+                    if (todo.completed) {
+                        Modifier
+                            .clip(MaterialTheme.shapes.extraLarge)
+                            .border(
+                                width = dimensionResource(R.dimen.button_border_small),
+                                color = Color.Green,
+                                shape = MaterialTheme.shapes.extraLarge
+                            )
+                    } else {
+                        Modifier
+                    }
+                )
             ) {
                 Icon(
                     imageVector = Icons.Filled.Done,
                     contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(
                         R.string.done_btn
                     ),
-                    modifier = if (todo.completed) {
-                        Modifier
-                            .clip(MaterialTheme.shapes.extraLarge)
-                            .background(Color.Green)
-                            .padding(dimensionResource(R.dimen.padding_small))
-                    } else {
-                        Modifier
-                            .clip(MaterialTheme.shapes.large)
-                    },
-                    tint = if (todo.completed) Color.White else Color.Green
+                    tint = if (todo.completed) Color.Green else Color.DarkGray.copy(alpha = 0.5f)
                 )
             }
         }
