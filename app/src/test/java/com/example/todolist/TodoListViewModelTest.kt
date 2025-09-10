@@ -66,4 +66,17 @@ class TodoListViewModelTest {
 
         assertEquals(expectedStatus, actualStatus)
     }
+
+    @Test
+    fun testCreateManyTodo() {
+        val actualSize = 10000
+
+        repeat(actualSize) {
+            viewModel.createTodo()
+        }
+
+        val expectedSize = viewModel.uiState.value.todoList.size
+
+        assertEquals(actualSize, expectedSize)
+    }
 }
