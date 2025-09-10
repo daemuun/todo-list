@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +42,7 @@ fun ChangeTodoScreen(
             ),
             shape = MaterialTheme.shapes.large
         )
-        Button(
+        OutlinedButton(
             onClick = { onTodoTitleSaveClick(todoId) },
             modifier = Modifier
                 .align(Alignment.BottomCenter)

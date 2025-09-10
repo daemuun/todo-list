@@ -12,11 +12,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -73,7 +73,7 @@ fun AddButton(
     onAddButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button(
+    OutlinedButton(
         onClick = { onAddButtonClick() },
         modifier = modifier
     ) {
@@ -93,7 +93,7 @@ fun TodoItem(
     onChangeTextClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    OutlinedCard(
         modifier = modifier
     ) {
         Row(
@@ -141,7 +141,8 @@ fun TodoItem(
                     modifier = if (todo.completed) {
                         Modifier
                             .clip(MaterialTheme.shapes.extraLarge)
-                            .background(Color.Green).padding(dimensionResource(R.dimen.padding_small))
+                            .background(Color.Green)
+                            .padding(dimensionResource(R.dimen.padding_small))
                     } else {
                         Modifier
                             .clip(MaterialTheme.shapes.large)
