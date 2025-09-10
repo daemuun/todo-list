@@ -84,4 +84,19 @@ class TodoListViewModelTest {
 
         assertEquals(actualSize, expectedSize)
     }
+
+    @Test
+    fun testChangeTodoTitle() {
+        viewModel.createTodo()
+        var currentUiState = viewModel.uiState.value
+        val expectedTitle = "create test"
+        val todoId = currentUiState.todoList.keys.first()
+
+        viewModel.changeTodoTitle(todoId, expectedTitle)
+
+        currentUiState = viewModel.uiState.value
+        val actualTitle = currentUiState.todoList[todoId]?.title
+
+        assertEquals(expectedTitle, actualTitle)
+    }
 }
