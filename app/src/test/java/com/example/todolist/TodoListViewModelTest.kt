@@ -1,10 +1,11 @@
 package com.example.todolist
 
 import com.example.todolist.data.MockTodoRepository
-import com.example.todolist.data.TodoListRepositoryImpl
+import com.example.todolist.data.mockTodoList
 import com.example.todolist.ui.TodoListViewModel
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.*
 
 class TodoListViewModelTest {
     private lateinit var viewModel: TodoListViewModel
@@ -12,6 +13,7 @@ class TodoListViewModelTest {
     @Before
     fun setUp() {
         viewModel = TodoListViewModel(MockTodoRepository())
+        mockTodoList.clear()
     }
 
     @Test
