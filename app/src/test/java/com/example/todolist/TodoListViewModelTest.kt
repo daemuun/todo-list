@@ -7,7 +7,12 @@ import org.junit.Test
 import org.junit.Assert.*
 
 class TodoListViewModelTest {
-    val viewModel = TodoListViewModel(MockTodoRepository())
+    private lateinit var viewModel: TodoListViewModel
+
+    @Before
+    fun setUp() {
+        viewModel = TodoListViewModel(MockTodoRepository())
+    }
 
     @Test
     fun testCreateTodoItem() {
