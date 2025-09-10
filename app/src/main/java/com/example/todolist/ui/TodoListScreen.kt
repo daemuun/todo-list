@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,7 +48,7 @@ fun TodoListScreen(
                 onChangeTextClick = onChangeTextClick,
                 onChangeStatusButtonClick = onChangeStatusButtonClick,
                 onDeleteButtonClick = onDeleteButtonClick,
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
             )
         }
 
@@ -56,7 +57,7 @@ fun TodoListScreen(
                 onAddButtonClick = { onAddButtonClick() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
+                    .padding(dimensionResource(R.dimen.padding_medium))
             )
         }
     }
@@ -96,7 +97,7 @@ fun TodoItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(dimensionResource(R.dimen.padding_small))
         ) {
             IconButton(
                 onClick = { onDeleteButtonClick(id) }
@@ -113,7 +114,7 @@ fun TodoItem(
                 modifier = Modifier
                     .weight(1f)
                     .clickable { onChangeTextClick(id) }
-                    .padding(8.dp),
+                    .padding(dimensionResource(R.dimen.padding_small)),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = if (todo.completed) {

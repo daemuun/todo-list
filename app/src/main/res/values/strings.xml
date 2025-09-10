@@ -4,4 +4,5 @@
     <string name="delete_btn">Удалить задачу</string>
     <string name="done_btn">Пометить задачу как выполненную</string>
     <string name="no_done_btn">Пометить задачу как невыполненную</string>
+    <string name="save_btn">Сохранить</string>
 </resources>

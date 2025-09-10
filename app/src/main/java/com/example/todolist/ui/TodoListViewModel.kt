@@ -38,7 +38,7 @@ class TodoListViewModel(
 
     private fun updateUiState(list: Map<String, Todo>) {
         _uiState.update { currentState ->
-            currentState.copy(list.toMap())
+            currentState.copy(list)
         }
     }
 }
