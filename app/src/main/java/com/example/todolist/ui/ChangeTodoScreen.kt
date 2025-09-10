@@ -3,23 +3,28 @@ package com.example.todolist.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.todolist.R
 import com.example.todolist.ui.theme.TodoListTheme
 
 @Composable
 fun ChangeTodoScreen(
     todoId: String,
-    changedTodoTitleValue: String,
+    todoTitle: String,
     onTodoTitleChange: (String) -> Unit,
     onTodoTitleSaveClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -28,22 +33,33 @@ fun ChangeTodoScreen(
     val paddingMedium = dimensionResource(R.dimen.padding_medium)
 
     Box(modifier = modifier) {
-        TextField(
-            value = changedTodoTitleValue,
+        OutlinedTextField(
+            value = todoTitle,
             onValueChange = { onTodoTitleChange(it) },
             modifier = Modifier
-                .fillMaxSize(1f)
+                .fillMaxSize()
+                .padding(dimensionResource(R.dimen.padding_medium))
+                .clip(MaterialTheme.shapes.small),
+            keyboardActions = KeyboardActions(
+                onDone = { KeyboardActions.Default.onDone }
+            ),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            )
         )
         Button(
             onClick = { onTodoTitleSaveClick(todoId) },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(paddingMedium)
+                .padding(dimensionResource(R.dimen.padding_large))
         ) {
             Text(
                 text = stringResource(R.string.save_btn),
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(vertical = paddingSmall, horizontal = paddingMedium)
+                modifier = Modifier.padding(
+                    vertical = paddingSmall,
+                    horizontal = paddingMedium,
+                )
             )
         }
     }
@@ -54,7 +70,7 @@ fun ChangeTodoScreen(
 fun ChangeTodoScreenPreview() {
     TodoListTheme {
         ChangeTodoScreen(
-            changedTodoTitleValue = "",
+            todoTitle = "",
             onTodoTitleChange = {},
             onTodoTitleSaveClick = {},
             todoId = "1",

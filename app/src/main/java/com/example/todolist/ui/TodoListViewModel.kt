@@ -36,6 +36,12 @@ class TodoListViewModel(
         updateUiState(list)
     }
 
+    fun updateChangedTitle(newTitle: String) {
+        _uiState.update { currentState ->
+            currentState.copy(changedTitle = newTitle)
+        }
+    }
+
     private fun updateUiState(list: Map<String, Todo>) {
         _uiState.update { currentState ->
             currentState.copy(list)

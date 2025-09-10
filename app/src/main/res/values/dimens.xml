@@ -2,4 +2,5 @@
 <resources>
     <dimen name="padding_small">6dp</dimen>
     <dimen name="padding_medium">12dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
 </resources>

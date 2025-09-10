@@ -15,19 +15,28 @@ class TodoListRepositoryImpl: TodoListRepository {
     }
 
     override fun createTodo(): Map<String, Todo> {
-        todoList.put(generateId(), Todo())
+        val id = generateId()
+        todoList[id] = Todo()
         return todoList.toMap()
     }
 
     override fun changeTodoStatus(id: String): Map<String, Todo> {
-        todoList[id]?.completed?.let { todoList[id]?.completed = !it }
-        todoList[id]?.updatedAt = LocalDateTime.now()
+        todoList[id]?.let { currentTodo ->
+            currentTodo.copy(
+                completed = !currentTodo.completed,
+                updatedAt = LocalDateTime.now()
+            )
+        }
         return todoList.toMap()
     }
 
     override fun changeTodoTitle(id: String, newTitle: String): Map<String, Todo> {
-        todoList[id]?.title = newTitle
-        todoList[id]?.updatedAt = LocalDateTime.now()
+        todoList[id]?.let { currentTodo ->
+            todoList[id] = currentTodo.copy(
+                title = newTitle,
+                updatedAt = LocalDateTime.now()
+            )
+        }
         return todoList.toMap()
     }
 }

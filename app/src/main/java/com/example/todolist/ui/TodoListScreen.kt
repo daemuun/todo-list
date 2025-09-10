@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.todolist.R
 import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
@@ -41,7 +40,10 @@ fun TodoListScreen(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
-        items(todos.toList()) { todo ->
+        items(
+            items = todos.toList(),
+            key = { it.first }
+        ) { todo ->
             TodoItem(
                 todo = todo.second,
                 id = todo.first,
@@ -131,7 +133,9 @@ fun TodoItem(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Done,
-                    contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(R.string.done_btn),
+                    contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(
+                        R.string.done_btn
+                    ),
                     tint = Color.Green
                 )
             }

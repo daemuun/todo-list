@@ -18,6 +18,7 @@ import com.example.todolist.ui.theme.TodoListTheme
 object TodoListPath {
     const val START = "start"
     const val CHANGE_SCREEN = "todo/{id}"
+    const val CHANGE_SCREEN_BASE = "todo/"
 }
 
 @Composable
@@ -38,7 +39,8 @@ fun TodoListApp(
                 TodoListScreen(
                     todos = currentUiState.todoList,
                     onChangeTextClick = { id ->
-                        navController.navigate("todo/$id")
+                        navController.navigate("${TodoListPath.CHANGE_SCREEN_BASE}$id")
+                        viewModel.updateChangedTitle(currentUiState.todoList[id]?.title ?: "")
                     },
                     onDeleteButtonClick = { id ->
                         viewModel.deleteTodo(id)
@@ -58,9 +60,15 @@ fun TodoListApp(
 
                 ChangeTodoScreen(
                     todoId = id,
-                    changedTodoTitleValue = "",
-                    onTodoTitleChange = {},
-                    onTodoTitleSaveClick = {},
+                    todoTitle = currentUiState.changedTitle,
+                    onTodoTitleChange = { newTitle ->
+                        viewModel.updateChangedTitle(newTitle)
+                    },
+                    onTodoTitleSaveClick = { id ->
+                        viewModel.changeTodoTitle(id, currentUiState.changedTitle)
+                        viewModel.updateChangedTitle("")
+                        navController.navigate(TodoListPath.START)
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
