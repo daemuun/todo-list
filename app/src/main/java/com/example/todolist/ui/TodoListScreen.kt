@@ -53,7 +53,7 @@ fun TodoListScreen(
 
         item {
             AddButton(
-                onAddButtonClick = onAddButtonClick,
+                onAddButtonClick = { onAddButtonClick() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
@@ -69,7 +69,7 @@ fun AddButton(
     modifier: Modifier = Modifier
 ) {
     Button(
-        onClick = onAddButtonClick,
+        onClick = { onAddButtonClick() },
         modifier = modifier
     ) {
         Text(
