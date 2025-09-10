@@ -1,5 +1,6 @@
 package com.example.todolist.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,17 +16,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.todolist.R
 import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
@@ -129,14 +133,22 @@ fun TodoItem(
             )
 
             IconButton(
-                onClick = { onChangeStatusButtonClick(id) }
+                onClick = { onChangeStatusButtonClick(id) },
             ) {
                 Icon(
                     imageVector = Icons.Filled.Done,
                     contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(
                         R.string.done_btn
                     ),
-                    tint = Color.Green
+                    modifier = if (todo.completed) {
+                        Modifier
+                            .clip(MaterialTheme.shapes.extraLarge)
+                            .background(Color.Green).padding(dimensionResource(R.dimen.padding_small))
+                    } else {
+                        Modifier
+                            .clip(MaterialTheme.shapes.large)
+                    },
+                    tint = if (todo.completed) Color.White else Color.Green
                 )
             }
         }
