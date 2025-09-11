@@ -1,12 +1,10 @@
 package com.example.todolist.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -14,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -33,36 +30,37 @@ fun ChangeTodoScreen(
     val paddingSmall = dimensionResource(R.dimen.padding_small)
     val paddingMedium = dimensionResource(R.dimen.padding_medium)
 
-    Box(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         OutlinedTextField(
             value = todoTitle,
             onValueChange = { onTodoTitleChange(it) },
             modifier = Modifier
-                .fillMaxSize()
-                .padding(dimensionResource(R.dimen.padding_medium)),
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(
+                    top = paddingMedium,
+                    start = paddingMedium,
+                    end = paddingMedium
+                ),
             label = { Text(text = stringResource(R.string.change_title_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
             shape = MaterialTheme.shapes.large
         )
-        OutlinedButton (
+        OutlinedButton(
             onClick = { onTodoTitleSaveClick(todoId) },
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(dimensionResource(R.dimen.padding_extraLarge)),
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
-
+                .padding(paddingMedium)
+                .fillMaxWidth(),
         ) {
             Text(
                 text = stringResource(R.string.save_btn),
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(
-                    vertical = paddingSmall,
-                    horizontal = paddingMedium,
-                )
+                modifier = Modifier.padding(horizontal = paddingMedium)
             )
         }
     }
