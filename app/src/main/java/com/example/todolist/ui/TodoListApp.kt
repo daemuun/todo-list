@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -38,6 +40,7 @@ object TodoListPath {
 fun TodoListTopAppBar(
     modifier: Modifier = Modifier,
     navigateHome: () -> Unit = {},
+    onFilterButtonClick: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -57,7 +60,17 @@ fun TodoListTopAppBar(
                     )
                 }
         },
-        actions = {},
+        actions = {
+            FilledTonalIconButton(
+                onClick = { onFilterButtonClick },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.back_top_btn)
+                )
+            }
+        },
         modifier = modifier
     )
 }

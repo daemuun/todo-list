@@ -46,7 +46,7 @@ fun ChangeTodoScreen(
             onClick = { onTodoTitleSaveClick(todoId) },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(dimensionResource(R.dimen.padding_large))
+                .padding(dimensionResource(R.dimen.padding_extraLarge))
         ) {
             Text(
                 text = stringResource(R.string.save_btn),

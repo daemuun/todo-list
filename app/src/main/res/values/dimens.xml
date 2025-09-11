@@ -4,4 +4,5 @@
     <dimen name="padding_medium">12dp</dimen>
     <dimen name="padding_large">24dp</dimen>
     <dimen name="button_border_small">2dp</dimen>
+    <dimen name="padding_extraLarge">30dp</dimen>
 </resources>
