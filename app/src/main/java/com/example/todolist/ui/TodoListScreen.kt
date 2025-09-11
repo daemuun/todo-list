@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.todolist.R
 import com.example.todolist.model.Todo
@@ -64,10 +66,7 @@ fun TodoListScreen(
                 )
             }
 
-            items(
-                items = todos.toList(),
-                key = { it.first }
-            ) { todo ->
+            items(items = todos.toList(), key = { it.first }) { todo ->
                 TodoItem(
                     todo = todo.second,
                     id = todo.first,
@@ -109,7 +108,7 @@ fun ManagmentState(
             modifier = Modifier.weight(1f)
         )
 
-        Spacer(modifier = Modifier.weight(0.25f))
+        Spacer(modifier = Modifier.width(20.dp))
 
         ManagmentStateButton(
             onClick = onSearchButtonClick,
@@ -131,10 +130,7 @@ fun ManagmentStateButton(
         onClick = onClick,
         modifier = modifier
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = imageVector,
                 contentDescription = stringResource(stringId)
@@ -311,7 +307,9 @@ fun CompletionIndicator(completed: Boolean, modifier: Modifier = Modifier) {
 fun FilterDialog() {
     Dialog(
         onDismissRequest = {}
-    ) { }
+    ) {
+        Text(text = "filter dialog")
+    }
 }
 
 
