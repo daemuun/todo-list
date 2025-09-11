@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +45,16 @@ fun TodoListScreen(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
+        item {
+            ManagmentState(
+                onFilterButtonClick = {},
+                onSearchButtonClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_medium))
+            )
+        }
+
         items(
             items = todos.toList(),
             key = { it.first }
@@ -67,6 +80,56 @@ fun TodoListScreen(
     }
 }
 
+@Composable
+fun ManagmentState(
+    onFilterButtonClick: () -> Unit,
+    onSearchButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
+        OutlinedButton(
+            onClick = onFilterButtonClick,
+            modifier = Modifier.weight(1f)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.FilterAlt,
+                    contentDescription = stringResource(R.string.filters_btn)
+                )
+                Text(
+                    text = stringResource(R.string.filters_btn),
+                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
+                )
+            }
+        }
+        Spacer(modifier = Modifier.weight(0.5f))
+        OutlinedButton(
+            onClick = onSearchButtonClick,
+            modifier = Modifier.weight(1f)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = stringResource(R.string.search_btn)
+                )
+                Text(
+                    text = stringResource(R.string.search_btn),
+                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun AddButton(

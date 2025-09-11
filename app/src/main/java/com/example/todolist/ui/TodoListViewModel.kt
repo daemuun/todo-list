@@ -18,7 +18,21 @@ class TodoListViewModel(
 
     fun createTodo() {
         val list = todoListRepository.createTodo()
-        updateUiState(list)
+        val newTodoId = list.keys.last()
+        _uiState.update { currentState ->
+            currentState.copy(
+                todoList = list,
+                navigateToTask = newTodoId
+            )
+        }
+    }
+
+    fun changeNavigationTarget(id: String?) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                navigateToTask = id
+            )
+        }
     }
 
     fun deleteTodo(id: String) {

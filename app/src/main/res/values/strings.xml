@@ -7,4 +7,6 @@
     <string name="save_btn">Сохранить</string>
     <string name="change_title_label">Введите текст задачи</string>
     <string name="back_top_btn">кнопка назад</string>
+    <string name="filters_btn">Фильтры</string>
+    <string name="search_btn">Поиск</string>
 </resources>

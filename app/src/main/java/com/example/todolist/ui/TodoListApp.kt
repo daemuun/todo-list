@@ -1,20 +1,22 @@
 package com.example.todolist.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -42,14 +44,15 @@ fun TodoListTopAppBar(
     navigateHome: () -> Unit = {},
     onFilterButtonClick: () -> Unit = {},
 ) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineSmall
-            )
-        },
-        navigationIcon = {
+    Column(modifier = modifier) {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            },
+            navigationIcon = {
                 FilledTonalIconButton(
                     onClick = { navigateHome() },
                     modifier = Modifier.padding(8.dp)
@@ -59,20 +62,21 @@ fun TodoListTopAppBar(
                         contentDescription = stringResource(R.string.back_top_btn)
                     )
                 }
-        },
-        actions = {
-            FilledTonalIconButton(
-                onClick = { onFilterButtonClick },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(R.string.back_top_btn)
-                )
-            }
-        },
-        modifier = modifier
-    )
+            },
+            actions = {
+                FilledTonalIconButton(
+                    onClick = { onFilterButtonClick },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = stringResource(R.string.back_top_btn)
+                    )
+                }
+            },
+        )
+        HorizontalDivider()
+    }
 }
 
 
@@ -83,6 +87,14 @@ fun TodoListApp(
     navController: NavHostController = rememberNavController()
 ) {
     val currentUiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(currentUiState.navigateToTask) {
+        currentUiState.navigateToTask?.let { id ->
+            navController.navigate("${TodoListPath.CHANGE_SCREEN_BASE}$id")
+            viewModel.updateChangedTitle(currentUiState.todoList[id]?.title ?: "")
+            viewModel.changeNavigationTarget(null)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -107,8 +119,7 @@ fun TodoListApp(
                 TodoListScreen(
                     todos = currentUiState.todoList,
                     onChangeTextClick = { id ->
-                        navController.navigate("${TodoListPath.CHANGE_SCREEN_BASE}$id")
-                        viewModel.updateChangedTitle(currentUiState.todoList[id]?.title ?: "")
+                        viewModel.changeNavigationTarget(id)
                     },
                     onDeleteButtonClick = { id ->
                         viewModel.deleteTodo(id)
