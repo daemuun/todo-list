@@ -27,7 +27,6 @@ fun ChangeTodoScreen(
     onTodoTitleSaveClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val paddingSmall = dimensionResource(R.dimen.padding_small)
     val paddingMedium = dimensionResource(R.dimen.padding_medium)
 
     Column(
