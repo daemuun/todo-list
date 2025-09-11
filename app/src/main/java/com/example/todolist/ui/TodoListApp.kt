@@ -36,7 +36,6 @@ object TodoListPath {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListTopAppBar(
-    canNavigateHome: Boolean,
     modifier: Modifier = Modifier,
     navigateHome: () -> Unit = {},
 ) {
@@ -48,7 +47,6 @@ fun TodoListTopAppBar(
             )
         },
         navigationIcon = {
-            if (canNavigateHome) {
                 FilledTonalIconButton(
                     onClick = { navigateHome() },
                     modifier = Modifier.padding(8.dp)
@@ -58,7 +56,6 @@ fun TodoListTopAppBar(
                         contentDescription = stringResource(R.string.back_top_btn)
                     )
                 }
-            }
         },
         actions = {},
         modifier = modifier
@@ -77,8 +74,6 @@ fun TodoListApp(
     Scaffold(
         topBar = {
             TodoListTopAppBar(
-                canNavigateHome = navController.previousBackStackEntry != null
-                        && navController.currentDestination?.route != TodoListPath.START,
                 navigateHome = {
                     navController.popBackStack(
                         route = TodoListPath.START,
