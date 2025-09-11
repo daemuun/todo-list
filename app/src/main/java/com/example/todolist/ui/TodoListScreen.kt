@@ -2,6 +2,8 @@ package com.example.todolist.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,42 +46,45 @@ fun TodoListScreen(
     onAddButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
-        item {
-            ManagmentState(
-                onFilterButtonClick = {},
-                onSearchButtonClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_medium))
-            )
+    Column(modifier = modifier) {
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(bottom = dimensionResource(R.dimen.padding_medium))
+        ) {
+            item {
+                ManagmentState(
+                    onFilterButtonClick = {},
+                    onSearchButtonClick = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                )
+            }
+
+            items(
+                items = todos.toList(),
+                key = { it.first }
+            ) { todo ->
+                TodoItem(
+                    todo = todo.second,
+                    id = todo.first,
+                    onChangeTextClick = onChangeTextClick,
+                    onChangeStatusButtonClick = onChangeStatusButtonClick,
+                    onDeleteButtonClick = onDeleteButtonClick,
+                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+                )
+            }
         }
 
-        items(
-            items = todos.toList(),
-            key = { it.first }
-        ) { todo ->
-            TodoItem(
-                todo = todo.second,
-                id = todo.first,
-                onChangeTextClick = onChangeTextClick,
-                onChangeStatusButtonClick = onChangeStatusButtonClick,
-                onDeleteButtonClick = onDeleteButtonClick,
-                modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-            )
-        }
-
-        item {
-            AddButton(
-                onAddButtonClick = { onAddButtonClick() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = dimensionResource(R.dimen.padding_medium),
-                        vertical = dimensionResource(R.dimen.padding_extraLarge)
-                    )
-            )
-        }
+        AddButton(
+            onAddButtonClick = { onAddButtonClick() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = dimensionResource(R.dimen.padding_medium),
+                    vertical = dimensionResource(R.dimen.padding_small)
+                )
+        )
     }
 }
 
@@ -236,6 +241,9 @@ fun TodoListScreenPreview() {
                 "5" to Todo("Починить кран на кухне"),
                 "6" to Todo("Сходить в спортзал"),
                 "7" to Todo("Протестировать новое приложение"),
+                "8" to Todo("Починить кран на кухне"),
+                "9" to Todo("Сходить в спортзал"),
+                "10" to Todo("Протестировать новое приложение"),
             ),
             onAddButtonClick = {},
             onChangeStatusButtonClick = {},
