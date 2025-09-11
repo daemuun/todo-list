@@ -1,6 +1,5 @@
 package com.example.todolist.ui
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,10 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -74,7 +74,10 @@ fun TodoListScreen(
                 onAddButtonClick = { onAddButtonClick() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_medium))
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.padding_medium),
+                        vertical = dimensionResource(R.dimen.padding_extraLarge)
+                    )
             )
         }
     }
@@ -156,66 +159,65 @@ fun TodoItem(
     onChangeTextClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    OutlinedCard(
-        modifier = modifier
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(R.dimen.padding_small))
-        ) {
-            IconButton(
-                onClick = { onDeleteButtonClick(id) }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(R.string.delete_btn),
-                    tint = Color.Red
-                )
-            }
-
-            Text(
-                text = todo.title,
+        Icon(
+            imageVector = if (todo.completed) {
+                Icons.Filled.Circle
+            } else (Icons.Outlined.Circle),
+            contentDescription = null,
+            modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_medium)),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        OutlinedCard {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .weight(1f)
-                    .clickable { onChangeTextClick(id) }
-                    .padding(dimensionResource(R.dimen.padding_small)),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = if (todo.completed) {
-                    MaterialTheme.typography.titleMedium.copy(
-                        textDecoration = TextDecoration.LineThrough
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_small))
+            ) {
+                IconButton(
+                    onClick = { onDeleteButtonClick(id) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(R.string.delete_btn),
+                        tint = Color.Red
                     )
-                } else {
-                    MaterialTheme.typography.titleMedium
                 }
-            )
 
-            IconButton(
-                onClick = { onChangeStatusButtonClick(id) },
-                modifier = Modifier.then(
-                    if (todo.completed) {
-                        Modifier
-                            .clip(MaterialTheme.shapes.extraLarge)
-                            .border(
-                                width = dimensionResource(R.dimen.button_border_small),
-                                color = Color.Green,
-                                shape = MaterialTheme.shapes.extraLarge
-                            )
+                Text(
+                    text = todo.title,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onChangeTextClick(id) }
+                        .padding(dimensionResource(R.dimen.padding_small)),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = if (todo.completed) {
+                        MaterialTheme.typography.titleMedium.copy(
+                            textDecoration = TextDecoration.LineThrough
+                        )
                     } else {
-                        Modifier
+                        MaterialTheme.typography.titleMedium
                     }
                 )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Done,
-                    contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(
-                        R.string.done_btn
-                    ),
-                    tint = if (todo.completed) Color.Green else Color.DarkGray.copy(alpha = 0.5f)
-                )
+
+                IconButton(
+                    onClick = { onChangeStatusButtonClick(id) },
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(
+                            R.string.done_btn
+                        ),
+                        tint = if (todo.completed) Color.Green else Color.DarkGray.copy(alpha = 0.5f)
+                    )
+                }
             }
         }
     }
