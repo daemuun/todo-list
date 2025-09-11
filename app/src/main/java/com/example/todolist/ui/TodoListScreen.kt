@@ -117,7 +117,7 @@ fun ManagmentState(
                 )
             }
         }
-        Spacer(modifier = Modifier.weight(0.5f))
+        Spacer(modifier = Modifier.weight(0.25f))
         OutlinedButton(
             onClick = onSearchButtonClick,
             modifier = Modifier.weight(1f)
