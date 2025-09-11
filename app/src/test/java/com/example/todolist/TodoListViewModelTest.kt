@@ -76,15 +76,15 @@ class TodoListViewModelTest {
 
     @Test
     fun testCreateManyTodo() {
-        val actualSize = 10000
+        val expectedSize = 10000
 
-        repeat(actualSize) {
+        repeat(expectedSize) {
             viewModel.createTodo()
         }
 
-        val expectedSize = viewModel.uiState.value.todoList.size
+        val actualSize = viewModel.uiState.value.todoList.size
 
-        assertEquals(actualSize, expectedSize)
+        assertEquals(expectedSize, actualSize)
     }
 
     @Test
