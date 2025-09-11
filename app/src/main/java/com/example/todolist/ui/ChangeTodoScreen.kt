@@ -28,6 +28,7 @@ fun ChangeTodoScreen(
     modifier: Modifier = Modifier,
 ) {
     val paddingMedium = dimensionResource(R.dimen.padding_medium)
+    val paddingSmall = dimensionResource(R.dimen.padding_small)
 
     Column(
         modifier = modifier,
@@ -53,7 +54,10 @@ fun ChangeTodoScreen(
         OutlinedButton(
             onClick = { onTodoTitleSaveClick(todoId) },
             modifier = Modifier
-                .padding(paddingMedium)
+                .padding(
+                    horizontal = paddingMedium,
+                    vertical = paddingSmall
+                )
                 .fillMaxWidth(),
         ) {
             Text(

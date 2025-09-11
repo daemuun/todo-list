@@ -1,5 +1,6 @@
 package com.example.todolist.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,11 +29,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
 import com.example.todolist.R
 import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
@@ -99,45 +102,51 @@ fun ManagmentState(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        OutlinedButton(
+        ManagmentStateButton(
             onClick = onFilterButtonClick,
+            imageVector = Icons.Filled.FilterAlt,
+            stringId = R.string.filters_btn,
             modifier = Modifier.weight(1f)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.FilterAlt,
-                    contentDescription = stringResource(R.string.filters_btn)
-                )
-                Text(
-                    text = stringResource(R.string.filters_btn),
-                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
-                )
-            }
-        }
+        )
+
         Spacer(modifier = Modifier.weight(0.25f))
-        OutlinedButton(
+
+        ManagmentStateButton(
             onClick = onSearchButtonClick,
+            imageVector = Icons.Filled.Search,
+            stringId = R.string.search_btn,
             modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+fun ManagmentStateButton(
+    onClick: () -> Unit,
+    imageVector: ImageVector,
+    @StringRes stringId: Int,
+    modifier: Modifier = Modifier
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = stringResource(R.string.search_btn)
-                )
-                Text(
-                    text = stringResource(R.string.search_btn),
-                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
-                )
-            }
+            Icon(
+                imageVector = imageVector,
+                contentDescription = stringResource(stringId)
+            )
+            Text(
+                text = stringResource(stringId),
+                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
+            )
         }
     }
 }
+
 
 @Composable
 fun AddButton(
@@ -169,64 +178,142 @@ fun TodoItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = if (todo.completed) {
-                Icons.Filled.Circle
-            } else (Icons.Outlined.Circle),
-            contentDescription = null,
-            modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_medium)),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        CompletionIndicator(completed = todo.completed)
+
+        TodoCard(
+            todo = todo,
+            id = id,
+            onDeleteButtonClick = onDeleteButtonClick,
+            onChangeStatusButtonClick = onChangeStatusButtonClick,
+            onChangeTextClick = onChangeTextClick
         )
-        OutlinedCard {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small))
-            ) {
-                IconButton(
-                    onClick = { onDeleteButtonClick(id) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(R.string.delete_btn),
-                        tint = Color.Red
-                    )
-                }
+    }
+}
 
-                Text(
-                    text = todo.title,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { onChangeTextClick(id) }
-                        .padding(dimensionResource(R.dimen.padding_small)),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = if (todo.completed) {
-                        MaterialTheme.typography.titleMedium.copy(
-                            textDecoration = TextDecoration.LineThrough
-                        )
-                    } else {
-                        MaterialTheme.typography.titleMedium
-                    }
-                )
+@Composable
+fun TodoCard(
+    todo: Todo,
+    id: String,
+    onDeleteButtonClick: (String) -> Unit,
+    onChangeStatusButtonClick: (String) -> Unit,
+    onChangeTextClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.padding_small))
+        ) {
+            DeleteButton(
+                onDeleteButtonClick = onDeleteButtonClick,
+                id = id
+            )
 
-                IconButton(
-                    onClick = { onChangeStatusButtonClick(id) },
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = if (todo.completed) stringResource(R.string.no_done_btn) else stringResource(
-                            R.string.done_btn
-                        ),
-                        tint = if (todo.completed) Color.Green else Color.DarkGray.copy(alpha = 0.5f)
-                    )
-                }
-            }
+            TodoText(
+                onChangeTextClick = onChangeTextClick,
+                title = todo.title,
+                completed = todo.completed,
+                id = id,
+                modifier = Modifier.weight(1f)
+            )
+
+            StatusButton(
+                onChangeStatusButtonClick = onChangeStatusButtonClick,
+                id = id,
+                completed = todo.completed
+            )
         }
     }
 }
+
+@Composable
+fun TodoText(
+    onChangeTextClick: (String) -> Unit,
+    title: String,
+    completed: Boolean,
+    id: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = title,
+        modifier = modifier
+            .clickable { onChangeTextClick(id) }
+            .padding(dimensionResource(R.dimen.padding_small)),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = if (completed) {
+            MaterialTheme.typography.titleMedium.copy(
+                textDecoration = TextDecoration.LineThrough
+            )
+        } else {
+            MaterialTheme.typography.titleMedium
+        }
+    )
+}
+
+@Composable
+fun DeleteButton(
+    onDeleteButtonClick: (String) -> Unit,
+    id: String,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = { onDeleteButtonClick(id) },
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = stringResource(R.string.delete_btn),
+            tint = Color.Red
+        )
+    }
+}
+
+@Composable
+fun StatusButton(
+    onChangeStatusButtonClick: (String) -> Unit,
+    id: String,
+    completed: Boolean,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = { onChangeStatusButtonClick(id) },
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Done,
+            contentDescription = if (completed) stringResource(R.string.no_done_btn) else stringResource(
+                R.string.done_btn
+            ),
+            tint = if (completed) Color.Green else Color.DarkGray.copy(alpha = 0.5f)
+        )
+    }
+}
+
+@Composable
+fun CompletionIndicator(completed: Boolean, modifier: Modifier = Modifier) {
+    Icon(
+        imageVector = if (completed) {
+            Icons.Filled.Circle
+        } else {
+            Icons.Outlined.Circle
+        },
+        contentDescription = null,
+        modifier = modifier.padding(end = dimensionResource(R.dimen.padding_medium)),
+        tint = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+}
+
+@Composable
+fun FilterDialog() {
+    Dialog(
+        onDismissRequest = {}
+    ) { }
+}
+
 
 @Preview(showBackground = true)
 @Composable
