@@ -4,16 +4,18 @@ import com.example.todolist.data.MockTodoRepository
 import com.example.todolist.data.mockTodoList
 import com.example.todolist.ui.TodoListViewModel
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import kotlin.math.exp
 
 class TodoListViewModelTest {
     private lateinit var viewModel: TodoListViewModel
 
     @Before
     fun setUp() {
-        viewModel = TodoListViewModel(MockTodoRepository())
         mockTodoList.clear()
+        viewModel =  TodoListViewModel(MockTodoRepository())
     }
 
     @Test
@@ -100,5 +102,38 @@ class TodoListViewModelTest {
         val actualTitle = currentUiState.todoList[todoId]?.title
 
         assertEquals(expectedTitle, actualTitle)
+    }
+
+    @Test
+    fun testChangeFiltersVisibility() {
+        viewModel.changeFilterDialogVisibility()
+
+        val currentUiState = viewModel.uiState.value
+        val actualVisibility = currentUiState.showFilterDialog
+
+        assertTrue(actualVisibility)
+    }
+
+    @Test
+    fun testChangeNavigateTarget() {
+        viewModel.createTodo()
+        var currentUiState = viewModel.uiState.value
+
+        val expectedNavigateTarget = currentUiState.todoList.keys.first()
+        viewModel.changeNavigationTarget(expectedNavigateTarget)
+
+        currentUiState = viewModel.uiState.value
+        val actualNavigationTarget = currentUiState.navigateToTask
+
+        assertEquals(expectedNavigateTarget, actualNavigationTarget)
+    }
+
+    @Test
+    fun testUpdateChangedTitle() {
+        val expectedTitleText = "hello world"
+        viewModel.updateChangedTitle(expectedTitleText)
+        val actualTitleText = viewModel.uiState.value.changedTitle
+
+        assertEquals(expectedTitleText, actualTitleText)
     }
 }

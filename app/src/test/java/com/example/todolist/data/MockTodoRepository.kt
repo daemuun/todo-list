@@ -6,29 +6,35 @@ import java.util.UUID
 
 class MockTodoRepository: TodoListRepository {
     override fun getAllTodo(): Map<String, Todo> {
-        return mockTodoList
+        return mockTodoList.toMap()
     }
 
-    override fun deleteTodo(id: String): Map<String, Todo> {
+    override fun deleteTodo(id: String) {
         mockTodoList.remove(id)
-        return mockTodoList
     }
 
-    override fun createTodo(): Map<String, Todo> {
-        mockTodoList.put(generateId(), Todo())
-        return mockTodoList
+    override fun createTodo(): String {
+        val id = generateId()
+        mockTodoList[id] = Todo()
+        return id
     }
 
-    override fun changeTodoStatus(id: String): Map<String, Todo> {
-        mockTodoList[id]?.completed?.let { mockTodoList[id]?.completed = !it }
-        mockTodoList[id]?.updatedAt = LocalDateTime.now()
-        return mockTodoList
+    override fun changeTodoStatus(id: String) {
+        mockTodoList[id]?.let { currentTodo ->
+            mockTodoList[id] = currentTodo.copy(
+                completed = !currentTodo.completed,
+                updatedAt = LocalDateTime.now()
+            )
+        }
     }
 
-    override fun changeTodoTitle(id: String, newTitle: String): Map<String, Todo> {
-        mockTodoList[id]?.title = newTitle
-        mockTodoList[id]?.updatedAt = LocalDateTime.now()
-        return mockTodoList
+    override fun changeTodoTitle(id: String, newTitle: String) {
+        mockTodoList[id]?.let { currentTodo ->
+            mockTodoList[id] = currentTodo.copy(
+                title = newTitle,
+                updatedAt = LocalDateTime.now()
+            )
+        }
     }
 }
 

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Circle
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todolist.R
 import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
@@ -47,6 +50,8 @@ fun TodoListScreen(
     todos: Map<String, Todo>,
     onChangeTextClick: (String) -> Unit,
     onChangeStatusButtonClick: (String) -> Unit,
+    onFiltersClick: () -> Unit,
+    onSearchClick: () -> Unit,
     onDeleteButtonClick: (String) -> Unit,
     onAddButtonClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -58,8 +63,8 @@ fun TodoListScreen(
         ) {
             item {
                 ManagmentState(
-                    onFilterButtonClick = {},
-                    onSearchButtonClick = {},
+                    onFilterButtonClick = onFiltersClick,
+                    onSearchButtonClick = onSearchClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(dimensionResource(R.dimen.padding_medium))
@@ -304,11 +309,19 @@ fun CompletionIndicator(completed: Boolean, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FilterDialog() {
+fun FilterDialog(
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Dialog(
-        onDismissRequest = {}
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            dismissOnClickOutside = true
+        )
     ) {
-        Text(text = "filter dialog")
+        Card(modifier = modifier) {
+            Text(text = "filter dialog")
+        }
     }
 }
 
@@ -334,6 +347,8 @@ fun TodoListScreenPreview() {
             onChangeStatusButtonClick = {},
             onChangeTextClick = {},
             onDeleteButtonClick = {},
+            onSearchClick = {},
+            onFiltersClick = {},
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -349,6 +364,16 @@ fun TodoItemPrewiew() {
             onChangeStatusButtonClick = {},
             onDeleteButtonClick = {},
             id = "1"
+        )
+    }
+}
+
+@Preview
+@Composable
+fun FiltersDialogPreview() {
+    TodoListTheme {
+        FilterDialog(
+            onDismissRequest = {},
         )
     }
 }

@@ -11,18 +11,21 @@ import kotlinx.coroutines.flow.update
 
 class TodoListViewModel(
     private val todoListRepository: TodoListRepository = TodoListRepositoryImpl()
-): ViewModel() {
-    private val _uiState = MutableStateFlow(TodoListUiState(todoListRepository.getAllTodo()))
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(TodoListUiState(emptyMap()))
 
     val uiState = _uiState.asStateFlow()
 
+    init {
+        setupState()
+    }
+
     fun createTodo() {
-        val list = todoListRepository.createTodo()
-        val newTodoId = list.keys.last()
+        val id = todoListRepository.createTodo()
         _uiState.update { currentState ->
             currentState.copy(
-                todoList = list,
-                navigateToTask = newTodoId
+                todoList = todoListRepository.getAllTodo(),
+                navigateToTask = id
             )
         }
     }
@@ -36,18 +39,18 @@ class TodoListViewModel(
     }
 
     fun deleteTodo(id: String) {
-        val list = todoListRepository.deleteTodo(id)
-        updateUiState(list)
+        todoListRepository.deleteTodo(id)
+        updateUiState(list = todoListRepository.getAllTodo())
     }
 
     fun changeTodoStatus(id: String) {
-        val list = todoListRepository.changeTodoStatus(id)
-        updateUiState(list)
+        todoListRepository.changeTodoStatus(id)
+        updateUiState(list = todoListRepository.getAllTodo())
     }
 
     fun changeTodoTitle(id: String, newTitle: String) {
-        val list = todoListRepository.changeTodoTitle(id, newTitle)
-        updateUiState(list)
+        todoListRepository.changeTodoTitle(id, newTitle)
+        updateUiState(list = todoListRepository.getAllTodo())
     }
 
     fun updateChangedTitle(newTitle: String) {
@@ -56,9 +59,28 @@ class TodoListViewModel(
         }
     }
 
+    fun changeFilterDialogVisibility() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                showFilterDialog = !currentState.showFilterDialog
+            )
+        }
+    }
+
     private fun updateUiState(list: Map<String, Todo>) {
         _uiState.update { currentState ->
             currentState.copy(list)
+        }
+    }
+
+    private fun setupState() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                todoList = todoListRepository.getAllTodo(),
+                changedTitle = "",
+                navigateToTask = null,
+                showFilterDialog = false
+            )
         }
     }
 }
