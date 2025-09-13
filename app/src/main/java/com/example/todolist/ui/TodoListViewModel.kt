@@ -67,6 +67,14 @@ class TodoListViewModel(
         }
     }
 
+    fun changeSearchDialogVisibility()  {
+        _uiState.update { currentState ->
+            currentState.copy(
+                showSearchDialog = !currentState.showSearchDialog
+            )
+        }
+    }
+
     private fun updateUiState(list: Map<String, Todo>) {
         _uiState.update { currentState ->
             currentState.copy(list)
