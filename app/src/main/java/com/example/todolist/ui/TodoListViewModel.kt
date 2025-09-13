@@ -87,7 +87,8 @@ class TodoListViewModel(
                 todoList = todoListRepository.getAllTodo(),
                 changedTitle = "",
                 navigateToTask = null,
-                showFilterDialog = false
+                showFilterDialog = false,
+                showSearchDialog = false,
             )
         }
     }
