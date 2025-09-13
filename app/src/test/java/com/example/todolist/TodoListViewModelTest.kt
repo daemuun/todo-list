@@ -115,6 +115,15 @@ class TodoListViewModelTest {
     }
 
     @Test
+    fun testChangeSearchVisibility() {
+        viewModel.changeSearchDialogVisibility()
+        val currentUiState = viewModel.uiState.value
+        val actualVisibility = currentUiState.showSearchDialog
+
+        assertTrue(actualVisibility)
+    }
+
+    @Test
     fun testChangeNavigateTarget() {
         viewModel.createTodo()
         var currentUiState = viewModel.uiState.value
