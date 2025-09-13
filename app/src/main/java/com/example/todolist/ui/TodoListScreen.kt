@@ -40,7 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todolist.R
 import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
@@ -50,8 +49,12 @@ fun TodoListScreen(
     todos: Map<String, Todo>,
     onChangeTextClick: (String) -> Unit,
     onChangeStatusButtonClick: (String) -> Unit,
+    showFilters: Boolean,
+    showSearch: Boolean,
     onFiltersClick: () -> Unit,
+    onFiltersDismiss: () -> Unit,
     onSearchClick: () -> Unit,
+    onSearchDismiss: () -> Unit,
     onDeleteButtonClick: (String) -> Unit,
     onAddButtonClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -91,6 +94,17 @@ fun TodoListScreen(
                     horizontal = dimensionResource(R.dimen.padding_medium),
                     vertical = dimensionResource(R.dimen.padding_small)
                 )
+        )
+    }
+    if (showFilters) {
+        FilterDialog(
+            onDismissRequest = onFiltersDismiss
+        )
+    }
+
+    if (showSearch) {
+        SearchDialog(
+            onDismissRequest = onSearchDismiss
         )
     }
 }
@@ -325,6 +339,23 @@ fun FilterDialog(
     }
 }
 
+@Composable
+fun SearchDialog(
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            dismissOnClickOutside = true
+        )
+    ) {
+        Card(modifier = modifier) {
+            Text(text = "search dialog")
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -349,6 +380,10 @@ fun TodoListScreenPreview() {
             onDeleteButtonClick = {},
             onSearchClick = {},
             onFiltersClick = {},
+            onFiltersDismiss = {},
+            onSearchDismiss = {},
+            showSearch = false,
+            showFilters = false,
             modifier = Modifier.fillMaxSize()
         )
     }

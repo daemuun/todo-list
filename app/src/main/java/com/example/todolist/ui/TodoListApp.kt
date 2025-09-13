@@ -130,10 +130,20 @@ fun TodoListApp(
                     onChangeStatusButtonClick = { id ->
                         viewModel.changeTodoStatus(id)
                     },
-                    onSearchClick = {},
+                    onSearchClick = {
+                        viewModel.changeSearchDialogVisibility()
+                    },
                     onFiltersClick = {
                         viewModel.changeFilterDialogVisibility()
                     },
+                    onFiltersDismiss = {
+                        viewModel.changeFilterDialogVisibility()
+                    },
+                    onSearchDismiss = {
+                        viewModel.changeSearchDialogVisibility()
+                    },
+                    showSearch = currentUiState.showSearchDialog,
+                    showFilters = currentUiState.showFilterDialog,
                     modifier = Modifier.fillMaxSize()
                 )
             }
