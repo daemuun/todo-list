@@ -1,12 +1,14 @@
 package com.example.todolist.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -20,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todolist.R
 import com.example.todolist.data.Sorts
+import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
 
 object TodoListPath {
@@ -38,12 +42,36 @@ object TodoListPath {
     const val CHANGE_SCREEN_BASE = "todo/"
 }
 
+fun shareTodoList(context: Context, todoList: Map<String, Todo>) {
+    val shareText = buildString {
+        append("📋 Мой список задач\n\n")
+
+        todoList.values.forEachIndexed { index, todo ->
+            val status = if (todo.completed) "✅" else "⏳"
+            append("${index + 1}. $status ${todo.title}\n")
+        }
+
+        val completedCount = todoList.values.count { it.completed }
+        val totalCount = todoList.size
+        append("\nПрогресс: $completedCount/$totalCount выполненно")
+    }
+
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, "Мой список задач")
+        putExtra(Intent.EXTRA_TEXT, shareText)
+    }
+
+    val shareIntent = Intent.createChooser(intent, "Поделиться списком задач")
+    context.startActivity(shareIntent)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListTopAppBar(
     modifier: Modifier = Modifier,
     navigateHome: () -> Unit = {},
-    onFilterButtonClick: () -> Unit = {},
+    onShareClick: () -> Unit = {}
 ) {
     Column(modifier = modifier) {
         CenterAlignedTopAppBar(
@@ -55,7 +83,7 @@ fun TodoListTopAppBar(
             },
             navigationIcon = {
                 FilledTonalIconButton(
-                    onClick = { navigateHome() },
+                    onClick = navigateHome,
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Icon(
@@ -66,12 +94,12 @@ fun TodoListTopAppBar(
             },
             actions = {
                 FilledTonalIconButton(
-                    onClick = { onFilterButtonClick },
+                    onClick = onShareClick,
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = stringResource(R.string.back_top_btn)
+                        imageVector = Icons.Default.Share,
+                        contentDescription = stringResource(R.string.share_todos)
                     )
                 }
             },
@@ -88,6 +116,7 @@ fun TodoListApp(
     navController: NavHostController = rememberNavController()
 ) {
     val currentUiState by viewModel.uiState.collectAsState()
+    val localContext = LocalContext.current
 
     LaunchedEffect(currentUiState.navigateToTask) {
         currentUiState.navigateToTask?.let { id ->
@@ -104,6 +133,12 @@ fun TodoListApp(
                     navController.popBackStack(
                         route = TodoListPath.START,
                         inclusive = false
+                    )
+                },
+                onShareClick = {
+                    shareTodoList(
+                        context = localContext,
+                        todoList = currentUiState.todoList
                     )
                 },
                 modifier = Modifier.fillMaxWidth()

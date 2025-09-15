@@ -15,4 +15,5 @@
     <string name="length_sort">По длинне</string>
     <string name="complited_filter">Выполненные</string>
     <string name="uncomplited_filter">Невыполненные</string>
+    <string name="share_todos">Поделиться</string>
 </resources>
