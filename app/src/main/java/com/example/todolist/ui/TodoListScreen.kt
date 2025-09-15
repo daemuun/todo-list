@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.Card
@@ -26,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,12 +44,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.todolist.R
+import com.example.todolist.data.Sorts
+import com.example.todolist.model.SortItem
 import com.example.todolist.model.Todo
 import com.example.todolist.ui.theme.TodoListTheme
 
 @Composable
 fun TodoListScreen(
     todos: Map<String, Todo>,
+    sorts: List<SortItem>,
     onChangeTextClick: (String) -> Unit,
     onChangeStatusButtonClick: (String) -> Unit,
     showFilters: Boolean,
@@ -98,7 +104,8 @@ fun TodoListScreen(
     }
     if (showFilters) {
         FilterDialog(
-            onDismissRequest = onFiltersDismiss
+            onDismissRequest = onFiltersDismiss,
+            sorts = sorts
         )
     }
 
@@ -122,7 +129,7 @@ fun ManagmentState(
     ) {
         ManagmentStateButton(
             onClick = onFilterButtonClick,
-            imageVector = Icons.Filled.FilterAlt,
+            imageVector = Icons.AutoMirrored.Filled.Sort,
             stringId = R.string.filters_btn,
             modifier = Modifier.weight(1f)
         )
@@ -325,6 +332,7 @@ fun CompletionIndicator(completed: Boolean, modifier: Modifier = Modifier) {
 @Composable
 fun FilterDialog(
     onDismissRequest: () -> Unit,
+    sorts: List<SortItem>,
     modifier: Modifier = Modifier
 ) {
     Dialog(
@@ -333,8 +341,47 @@ fun FilterDialog(
             dismissOnClickOutside = true
         )
     ) {
-        Card(modifier = modifier) {
-            Text(text = "filter dialog")
+        FilterDiaogLayout(
+            sorts = sorts,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun FilterDiaogLayout(
+    sorts: List<SortItem>,
+    modifier: Modifier = Modifier
+) {
+    Card(modifier = modifier) {
+        LazyColumn {
+            items(sorts) { sort ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    RadioButton(
+                        selected = false,
+                        onClick = {},
+                    )
+                    Text(
+                        text = stringResource(sort.sortName),
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = if (!sort.reverseOrder) {
+                                Icons.Filled.ArrowUpward
+                            } else {
+                                Icons.Filled.ArrowDownward
+                            } ,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -374,6 +421,7 @@ fun TodoListScreenPreview() {
                 "9" to Todo("Сходить в спортзал"),
                 "10" to Todo("Протестировать новое приложение"),
             ),
+            sorts = Sorts,
             onAddButtonClick = {},
             onChangeStatusButtonClick = {},
             onChangeTextClick = {},
@@ -407,8 +455,8 @@ fun TodoItemPrewiew() {
 @Composable
 fun FiltersDialogPreview() {
     TodoListTheme {
-        FilterDialog(
-            onDismissRequest = {},
+        FilterDiaogLayout(
+            sorts = Sorts
         )
     }
 }
