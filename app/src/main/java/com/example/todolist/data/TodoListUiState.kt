@@ -1,5 +1,6 @@
 package com.example.todolist.data
 
+import com.example.todolist.model.SortItem
 import com.example.todolist.model.Todo
 
 data class TodoListUiState(
@@ -8,4 +9,6 @@ data class TodoListUiState(
     val navigateToTask: String? = null,
     val showFilterDialog: Boolean = false,
     val showSearchDialog: Boolean = false,
+    val selectedSortItem: SortItem? = null,
+    val isCompletedFilter: Boolean? = null
 )

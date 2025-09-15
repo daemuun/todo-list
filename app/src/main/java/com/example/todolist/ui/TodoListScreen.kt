@@ -19,10 +19,12 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
@@ -53,6 +56,7 @@ import com.example.todolist.ui.theme.TodoListTheme
 fun TodoListScreen(
     todos: Map<String, Todo>,
     sorts: List<SortItem>,
+    selectedSortItem: SortItem?,
     onChangeTextClick: (String) -> Unit,
     onChangeStatusButtonClick: (String) -> Unit,
     showFilters: Boolean,
@@ -63,6 +67,12 @@ fun TodoListScreen(
     onSearchDismiss: () -> Unit,
     onDeleteButtonClick: (String) -> Unit,
     onAddButtonClick: () -> Unit,
+    isCompletedFilter: Boolean?,
+    onSortSelected: (SortItem) -> Unit,
+    onSortOrderChange: (SortItem) -> Unit,
+    onFilterSelected: (Boolean?) -> Unit,
+    onFilterAndSortAccept: () -> Unit,
+    onFilterAndSortCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -105,7 +115,14 @@ fun TodoListScreen(
     if (showFilters) {
         FilterDialog(
             onDismissRequest = onFiltersDismiss,
-            sorts = sorts
+            sorts = sorts,
+            selectedSortItem = selectedSortItem,
+            isCompletedFilter = isCompletedFilter,
+            onSortSelected = onSortSelected,
+            onFilterSelected = onFilterSelected,
+            onFilterAndSortAccept = onFilterAndSortAccept,
+            onFilterAndSortCancel = onFilterAndSortCancel,
+            onSortOrderChange = onSortOrderChange
         )
     }
 
@@ -333,6 +350,13 @@ fun CompletionIndicator(completed: Boolean, modifier: Modifier = Modifier) {
 fun FilterDialog(
     onDismissRequest: () -> Unit,
     sorts: List<SortItem>,
+    selectedSortItem: SortItem?,
+    isCompletedFilter: Boolean?,
+    onSortSelected: (SortItem) -> Unit,
+    onSortOrderChange: (SortItem) -> Unit,
+    onFilterSelected: (Boolean?) -> Unit,
+    onFilterAndSortAccept: () -> Unit,
+    onFilterAndSortCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Dialog(
@@ -343,6 +367,13 @@ fun FilterDialog(
     ) {
         FilterDiaogLayout(
             sorts = sorts,
+            isCompletedFilter = isCompletedFilter,
+            onSortSelected = onSortSelected,
+            onFilterSelected = onFilterSelected,
+            onFilterAndSortAccept = onFilterAndSortAccept,
+            onFilterAndSortCancel = onFilterAndSortCancel,
+            onSortOrderChange = onSortOrderChange,
+            selectedSortItem = selectedSortItem,
             modifier = modifier
         )
     }
@@ -351,35 +382,132 @@ fun FilterDialog(
 @Composable
 fun FilterDiaogLayout(
     sorts: List<SortItem>,
+    isCompletedFilter: Boolean?,
+    selectedSortItem: SortItem?,
+    onSortSelected: (SortItem) -> Unit,
+    onSortOrderChange: (SortItem) -> Unit,
+    onFilterSelected: (Boolean?) -> Unit,
+    onFilterAndSortAccept: () -> Unit,
+    onFilterAndSortCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
-        LazyColumn {
-            items(sorts) { sort ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
+            LazyColumn {
+                items(sorts) { sort ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        RadioButton(
+                            selected = selectedSortItem?.sortCategory == sort.sortCategory,
+                            onClick = { onSortSelected(sort) },
+                        )
+                        Text(
+                            text = stringResource(sort.sortName),
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        IconButton(onClick = {
+                            if (selectedSortItem?.sortCategory == sort.sortCategory) {
+                                onSortOrderChange(sort)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = if (selectedSortItem?.sortCategory == sort.sortCategory && selectedSortItem.reverseOrder) {
+                                    Icons.Filled.ArrowDownward
+                                } else {
+                                    Icons.Filled.ArrowUpward
+                                },
+                                modifier = modifier.then(
+                                    if (selectedSortItem?.sortCategory == sort.sortCategory) {
+                                        Modifier
+                                    } else {
+                                        Modifier.alpha(0.5f)
+                                    }
+                                ),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }
+
+            HorizontalDivider(
+                thickness = 2.dp,
+                modifier = Modifier.padding(
+                    vertical = dimensionResource(R.dimen.padding_small),
+                    horizontal = dimensionResource(R.dimen.padding_large)
+                )
+            )
+
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
-                        selected = false,
-                        onClick = {},
+                        selected = isCompletedFilter == true,
+                        onClick = {
+                            onFilterSelected(
+                                if (isCompletedFilter == true) {
+                                    null
+                                } else {
+                                    true
+                                }
+                            )
+                        }
                     )
                     Text(
-                        text = stringResource(sort.sortName),
-                        modifier = Modifier.weight(1f),
+                        text = stringResource(R.string.complited_filter),
                         style = MaterialTheme.typography.titleLarge
                     )
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = if (!sort.reverseOrder) {
-                                Icons.Filled.ArrowUpward
-                            } else {
-                                Icons.Filled.ArrowDownward
-                            } ,
-                            contentDescription = null
-                        )
-                    }
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = isCompletedFilter == false,
+                        onClick = {
+                            onFilterSelected(
+                                if (isCompletedFilter == false) {
+                                    null
+                                } else {
+                                    false
+                                }
+                            )
+                        }
+                    )
+                    Text(
+                        text = stringResource(R.string.uncomplited_filter),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            }
+
+            HorizontalDivider(
+                thickness = 2.dp,
+                modifier = Modifier.padding(
+                    vertical = dimensionResource(R.dimen.padding_small),
+                    horizontal = dimensionResource(R.dimen.padding_large)
+                )
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = dimensionResource(R.dimen.padding_extraLarge))
+            ) {
+                IconButton(onClick = onFilterAndSortCancel) {
+                    Icon(
+                        imageVector = Icons.Filled.DeleteForever,
+                        contentDescription = null,
+                        tint = Color.Red
+                    )
+                }
+
+                IconButton(onClick = onFilterAndSortAccept) {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = null,
+                        tint = Color.Green
+                    )
                 }
             }
         }
@@ -431,7 +559,14 @@ fun TodoListScreenPreview() {
             onFiltersDismiss = {},
             onSearchDismiss = {},
             showSearch = false,
+            selectedSortItem = null,
             showFilters = false,
+            isCompletedFilter = null,
+            onSortSelected = {},
+            onFilterSelected = {},
+            onFilterAndSortAccept = {},
+            onFilterAndSortCancel = {},
+            onSortOrderChange = {},
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -456,6 +591,13 @@ fun TodoItemPrewiew() {
 fun FiltersDialogPreview() {
     TodoListTheme {
         FilterDiaogLayout(
+            onSortSelected = {},
+            isCompletedFilter = null,
+            onFilterSelected = {},
+            onFilterAndSortAccept = {},
+            onFilterAndSortCancel = {},
+            onSortOrderChange = {},
+            selectedSortItem = null,
             sorts = Sorts
         )
     }

@@ -29,6 +29,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todolist.R
+import com.example.todolist.data.Sorts
 import com.example.todolist.ui.theme.TodoListTheme
 
 object TodoListPath {
@@ -118,6 +119,7 @@ fun TodoListApp(
             composable(TodoListPath.START) {
                 TodoListScreen(
                     todos = currentUiState.todoList,
+                    sorts = Sorts,
                     onChangeTextClick = { id ->
                         viewModel.changeNavigationTarget(id)
                     },
@@ -142,6 +144,23 @@ fun TodoListApp(
                     onSearchDismiss = {
                         viewModel.changeSearchDialogVisibility()
                     },
+                    isCompletedFilter = currentUiState.isCompletedFilter,
+                    onSortSelected = { sortItem ->
+                        viewModel.changeSelectedSortItem(sortItem)
+                    },
+                    onFilterSelected = { filter ->
+                        viewModel.changeIsCompletedFilter(filter)
+                    },
+                    onFilterAndSortAccept = {
+                        viewModel.getSortedAndFilteredTodo()
+                    },
+                    onFilterAndSortCancel = {
+                        viewModel.clearSortsAndFilters()
+                    },
+                    onSortOrderChange = {
+                        viewModel.changeFilterOrder()
+                    },
+                    selectedSortItem = currentUiState.selectedSortItem,
                     showSearch = currentUiState.showSearchDialog,
                     showFilters = currentUiState.showFilterDialog,
                     modifier = Modifier.fillMaxSize()

@@ -36,6 +36,14 @@ class TodoListRepositoryImpl: TodoListRepository {
             )
         }
     }
+
+    override fun getCompletedTodos(): Map<String, Todo> {
+        return todoList.filter { (_, todo) -> todo.completed }.toMap()
+    }
+
+    override fun getUnCompletedTodos(): Map<String, Todo> {
+        return todoList.filter { (_, todo) -> !todo.completed }.toMap()
+    }
 }
 
 private fun generateId() = UUID.randomUUID().toString()

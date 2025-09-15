@@ -6,5 +6,5 @@ data class Todo(
     var title: String = "",
     var completed: Boolean = false,
     val createdAt: LocalDateTime = LocalDateTime.now(),
-    var updatedAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 )

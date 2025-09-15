@@ -9,4 +9,10 @@
     <string name="back_top_btn">кнопка назад</string>
     <string name="filters_btn">Фильтры</string>
     <string name="search_btn">Поиск</string>
+    <string name="alphabet_sort">По алфавиту</string>
+    <string name="created_sort">По созданию</string>
+    <string name="updated_sort">По обновлению</string>
+    <string name="length_sort">По длинне</string>
+    <string name="complited_filter">Выполненные</string>
+    <string name="uncomplited_filter">Невыполненные</string>
 </resources>
