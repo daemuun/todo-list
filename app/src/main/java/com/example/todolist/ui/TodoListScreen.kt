@@ -490,7 +490,16 @@ fun FilterDiaogLayout(
                         })
                     Text(
                         text = stringResource(R.string.uncomplited_filter),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.clickable(onClick = {
+                            onFilterSelected(
+                                if (isCompletedFilter == false) {
+                                    null
+                                } else {
+                                    false
+                                }
+                            )
+                        })
                     )
                 }
             }
