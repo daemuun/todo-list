@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,11 +69,15 @@ fun TodoListScreen(
     onDeleteButtonClick: (String) -> Unit,
     onAddButtonClick: () -> Unit,
     isCompletedFilter: Boolean?,
-    onSortSelected: (SortItem) -> Unit,
+    onSortSelected: (SortItem?) -> Unit,
     onSortOrderChange: (SortItem) -> Unit,
     onFilterSelected: (Boolean?) -> Unit,
     onFilterAndSortAccept: () -> Unit,
     onFilterAndSortCancel: () -> Unit,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
+    onSearchCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -103,8 +108,7 @@ fun TodoListScreen(
         }
 
         AddButton(
-            onAddButtonClick = { onAddButtonClick() },
-            modifier = Modifier
+            onAddButtonClick = { onAddButtonClick() }, modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     horizontal = dimensionResource(R.dimen.padding_medium),
@@ -128,16 +132,18 @@ fun TodoListScreen(
 
     if (showSearch) {
         SearchDialog(
-            onDismissRequest = onSearchDismiss
+            onDismissRequest = onSearchDismiss,
+            query = query,
+            onQueryChange = onQueryChange,
+            onSearch = onSearch,
+            onSearchCancel = onSearchCancel,
         )
     }
 }
 
 @Composable
 fun ManagmentState(
-    onFilterButtonClick: () -> Unit,
-    onSearchButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onFilterButtonClick: () -> Unit, onSearchButtonClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -170,13 +176,11 @@ fun ManagmentStateButton(
     modifier: Modifier = Modifier
 ) {
     OutlinedButton(
-        onClick = onClick,
-        modifier = modifier
+        onClick = onClick, modifier = modifier
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                imageVector = imageVector,
-                contentDescription = stringResource(stringId)
+                imageVector = imageVector, contentDescription = stringResource(stringId)
             )
             Text(
                 text = stringResource(stringId),
@@ -189,12 +193,10 @@ fun ManagmentStateButton(
 
 @Composable
 fun AddButton(
-    onAddButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onAddButtonClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     OutlinedButton(
-        onClick = { onAddButtonClick() },
-        modifier = modifier
+        onClick = { onAddButtonClick() }, modifier = modifier
     ) {
         Text(
             text = stringResource(R.string.new_task_btn),
@@ -247,8 +249,7 @@ fun TodoCard(
                 .padding(dimensionResource(R.dimen.padding_small))
         ) {
             DeleteButton(
-                onDeleteButtonClick = onDeleteButtonClick,
-                id = id
+                onDeleteButtonClick = onDeleteButtonClick, id = id
             )
 
             TodoText(
@@ -289,19 +290,15 @@ fun TodoText(
             )
         } else {
             MaterialTheme.typography.titleMedium
-        }
-    )
+        })
 }
 
 @Composable
 fun DeleteButton(
-    onDeleteButtonClick: (String) -> Unit,
-    id: String,
-    modifier: Modifier = Modifier
+    onDeleteButtonClick: (String) -> Unit, id: String, modifier: Modifier = Modifier
 ) {
     IconButton(
-        onClick = { onDeleteButtonClick(id) },
-        modifier = modifier
+        onClick = { onDeleteButtonClick(id) }, modifier = modifier
     ) {
         Icon(
             imageVector = Icons.Filled.Close,
@@ -319,8 +316,7 @@ fun StatusButton(
     modifier: Modifier = Modifier
 ) {
     IconButton(
-        onClick = { onChangeStatusButtonClick(id) },
-        modifier = modifier
+        onClick = { onChangeStatusButtonClick(id) }, modifier = modifier
     ) {
         Icon(
             imageVector = Icons.Filled.Done,
@@ -352,7 +348,7 @@ fun FilterDialog(
     sorts: List<SortItem>,
     selectedSortItem: SortItem?,
     isCompletedFilter: Boolean?,
-    onSortSelected: (SortItem) -> Unit,
+    onSortSelected: (SortItem?) -> Unit,
     onSortOrderChange: (SortItem) -> Unit,
     onFilterSelected: (Boolean?) -> Unit,
     onFilterAndSortAccept: () -> Unit,
@@ -360,8 +356,7 @@ fun FilterDialog(
     modifier: Modifier = Modifier
 ) {
     Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
+        onDismissRequest = onDismissRequest, properties = DialogProperties(
             dismissOnClickOutside = true
         )
     ) {
@@ -384,7 +379,7 @@ fun FilterDiaogLayout(
     sorts: List<SortItem>,
     isCompletedFilter: Boolean?,
     selectedSortItem: SortItem?,
-    onSortSelected: (SortItem) -> Unit,
+    onSortSelected: (SortItem?) -> Unit,
     onSortOrderChange: (SortItem) -> Unit,
     onFilterSelected: (Boolean?) -> Unit,
     onFilterAndSortAccept: () -> Unit,
@@ -402,11 +397,27 @@ fun FilterDiaogLayout(
                     ) {
                         RadioButton(
                             selected = selectedSortItem?.sortCategory == sort.sortCategory,
-                            onClick = { onSortSelected(sort) },
+                            onClick = {
+                                if (selectedSortItem?.sortCategory == sort.sortCategory) {
+                                    onSortSelected(null)
+
+                                } else {
+                                    onSortSelected(sort)
+                                }
+                            },
                         )
                         Text(
                             text = stringResource(sort.sortName),
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable(onClick = {
+                                    if (selectedSortItem?.sortCategory == sort.sortCategory) {
+                                        onSortSelected(null)
+
+                                    } else {
+                                        onSortSelected(sort)
+                                    }
+                                }),
                             style = MaterialTheme.typography.titleLarge
                         )
                         IconButton(onClick = {
@@ -419,15 +430,13 @@ fun FilterDiaogLayout(
                                     Icons.Filled.ArrowDownward
                                 } else {
                                     Icons.Filled.ArrowUpward
-                                },
-                                modifier = modifier.then(
+                                }, modifier = modifier.then(
                                     if (selectedSortItem?.sortCategory == sort.sortCategory) {
                                         Modifier
                                     } else {
                                         Modifier.alpha(0.5f)
                                     }
-                                ),
-                                contentDescription = null
+                                ), contentDescription = null
                             )
                         }
                     }
@@ -435,8 +444,7 @@ fun FilterDiaogLayout(
             }
 
             HorizontalDivider(
-                thickness = 2.dp,
-                modifier = Modifier.padding(
+                thickness = 2.dp, modifier = Modifier.padding(
                     vertical = dimensionResource(R.dimen.padding_small),
                     horizontal = dimensionResource(R.dimen.padding_large)
                 )
@@ -445,8 +453,7 @@ fun FilterDiaogLayout(
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
-                        selected = isCompletedFilter == true,
-                        onClick = {
+                        selected = isCompletedFilter == true, onClick = {
                             onFilterSelected(
                                 if (isCompletedFilter == true) {
                                     null
@@ -454,17 +461,25 @@ fun FilterDiaogLayout(
                                     true
                                 }
                             )
-                        }
-                    )
+                        })
                     Text(
                         text = stringResource(R.string.complited_filter),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.clickable(
+                            onClick = {
+                                onFilterSelected(
+                                    if (isCompletedFilter == true) {
+                                        null
+                                    } else {
+                                        true
+                                    }
+                                )
+                            })
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
-                        selected = isCompletedFilter == false,
-                        onClick = {
+                        selected = isCompletedFilter == false, onClick = {
                             onFilterSelected(
                                 if (isCompletedFilter == false) {
                                     null
@@ -472,8 +487,7 @@ fun FilterDiaogLayout(
                                     false
                                 }
                             )
-                        }
-                    )
+                        })
                     Text(
                         text = stringResource(R.string.uncomplited_filter),
                         style = MaterialTheme.typography.titleLarge
@@ -482,8 +496,7 @@ fun FilterDiaogLayout(
             }
 
             HorizontalDivider(
-                thickness = 2.dp,
-                modifier = Modifier.padding(
+                thickness = 2.dp, modifier = Modifier.padding(
                     vertical = dimensionResource(R.dimen.padding_small),
                     horizontal = dimensionResource(R.dimen.padding_large)
                 )
@@ -492,7 +505,9 @@ fun FilterDiaogLayout(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = dimensionResource(R.dimen.padding_extraLarge))
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(R.dimen.padding_extraLarge))
             ) {
                 IconButton(onClick = onFilterAndSortCancel) {
                     Icon(
@@ -516,21 +531,76 @@ fun FilterDiaogLayout(
 
 @Composable
 fun SearchDialog(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
+    onSearchCancel: () -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
+        onDismissRequest = onDismissRequest, properties = DialogProperties(
             dismissOnClickOutside = true
         )
     ) {
-        Card(modifier = modifier) {
-            Text(text = "search dialog")
-        }
+        SearchDialogLayout(
+            query = query,
+            onQueryChange = onQueryChange,
+            onSearch = onSearch,
+            onSearchCancel = onSearchCancel,
+            modifier = modifier
+        )
     }
 }
 
+@Composable
+fun SearchDialogLayout(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
+    onSearchCancel: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.padding_medium))
+        ) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_small)),
+                shape = MaterialTheme.shapes.large
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_small))
+            ) {
+                OutlinedButton(
+                    onClick = onSearch, modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(R.string.search_btn),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                OutlinedButton(
+                    onClick = onSearchCancel, modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(R.string.cancel_btn),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -567,6 +637,10 @@ fun TodoListScreenPreview() {
             onFilterAndSortAccept = {},
             onFilterAndSortCancel = {},
             onSortOrderChange = {},
+            onSearch = {},
+            onQueryChange = {},
+            onSearchCancel = {},
+            query = "",
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -599,6 +673,19 @@ fun FiltersDialogPreview() {
             onSortOrderChange = {},
             selectedSortItem = null,
             sorts = Sorts
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SearchDialogPreview() {
+    TodoListTheme {
+        SearchDialogLayout(
+            onSearch = {},
+            onQueryChange = {},
+            onSearchCancel = {},
+            query = "",
         )
     }
 }

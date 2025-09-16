@@ -195,6 +195,16 @@ fun TodoListApp(
                     onSortOrderChange = {
                         viewModel.changeFilterOrder()
                     },
+                    onSearch = {
+                        viewModel.searchAccept()
+                    },
+                    onQueryChange = { newQuery ->
+                        viewModel.changeSearchQuery(newQuery)
+                    },
+                    onSearchCancel = {
+                        viewModel.searchCancel()
+                    },
+                    query = currentUiState.searchQuery,
                     selectedSortItem = currentUiState.selectedSortItem,
                     showSearch = currentUiState.showSearchDialog,
                     showFilters = currentUiState.showFilterDialog,

@@ -6,6 +6,7 @@ import com.example.todolist.data.TodoListRepository
 import com.example.todolist.data.TodoListRepositoryImpl
 import com.example.todolist.data.TodoListUiState
 import com.example.todolist.model.SortItem
+import com.example.todolist.model.Todo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -82,46 +83,52 @@ class TodoListViewModel(
             null -> todoListRepository.getAllTodo()
         }
 
+        val similarTodos = getSimilarTodo(filteredList)
+
         val sortItem = _uiState.value.selectedSortItem
         val sortedTodoList = if (sortItem != null) {
             when (sortItem.sortCategory) {
                 SortCategory.Alphabetical -> {
                     if (sortItem.reverseOrder) {
-                        filteredList.entries.sortedByDescending { it.value.title }
+                        similarTodos.entries.sortedByDescending { it.value.title }
                     } else {
-                        filteredList.entries.sortedBy { it.value.title }
+                        similarTodos.entries.sortedBy { it.value.title }
                     }
                 }
+
                 SortCategory.CreatedAt -> {
                     if (sortItem.reverseOrder) {
-                        filteredList.entries.sortedByDescending { it.value.createdAt }
+                        similarTodos.entries.sortedByDescending { it.value.createdAt }
                     } else {
-                        filteredList.entries.sortedBy { it.value.createdAt }
+                        similarTodos.entries.sortedBy { it.value.createdAt }
                     }
                 }
+
                 SortCategory.UpdatedAt -> {
                     if (sortItem.reverseOrder) {
-                        filteredList.entries.sortedByDescending { it.value.updatedAt }
+                        similarTodos.entries.sortedByDescending { it.value.updatedAt }
                     } else {
-                        filteredList.entries.sortedBy { it.value.updatedAt }
+                        similarTodos.entries.sortedBy { it.value.updatedAt }
                     }
                 }
+
                 SortCategory.TodoLength -> {
                     if (sortItem.reverseOrder) {
-                        filteredList.entries.sortedByDescending { it.value.title.length }
+                        similarTodos.entries.sortedByDescending { it.value.title.length }
                     } else {
-                        filteredList.entries.sortedBy { it.value.title.length }
+                        similarTodos.entries.sortedBy { it.value.title.length }
                     }
                 }
             }.associate { it.key to it.value }
         } else {
-            filteredList
+            similarTodos
         }
 
         _uiState.update { currentState ->
             currentState.copy(
                 todoList = sortedTodoList,
-                showFilterDialog = false
+                showFilterDialog = false,
+                showSearchDialog = false
             )
         }
     }
@@ -134,6 +141,7 @@ class TodoListViewModel(
                 isCompletedFilter = null
             )
         }
+        getSortedAndFilteredTodo()
     }
 
     fun changeFilterOrder() {
@@ -146,16 +154,46 @@ class TodoListViewModel(
         }
     }
 
-    fun changeSelectedSortItem(sortItem: SortItem) {
+    fun changeSelectedSortItem(sortItem: SortItem?) {
         _uiState.update { currentUiState ->
             currentUiState.copy(selectedSortItem = sortItem)
         }
+    }
+
+    fun searchAccept() {
+        _uiState.update { currentUiState ->
+            currentUiState.copy(showSearchDialog = false)
+        }
+        getSortedAndFilteredTodo()
+    }
+
+    fun changeSearchQuery(newQuery: String) {
+        _uiState.update { currentUiState ->
+            currentUiState.copy(searchQuery = newQuery)
+        }
+    }
+
+    fun searchCancel() {
+        _uiState.update { currentUiState ->
+            currentUiState.copy(
+                searchQuery = "",
+                showSearchDialog = false
+            )
+        }
+        getSortedAndFilteredTodo()
     }
 
     fun changeIsCompletedFilter(filter: Boolean?) {
         _uiState.update { currentUiState ->
             currentUiState.copy(isCompletedFilter = filter)
         }
+    }
+
+    private fun getSimilarTodo(todos: Map<String, Todo>): Map<String, Todo> {
+        val similarTodos = todos.filter {
+            it.value.title.contains(uiState.value.searchQuery, ignoreCase = true)
+        }
+        return similarTodos
     }
 
     private fun setupState() {

@@ -16,4 +16,5 @@
     <string name="complited_filter">Выполненные</string>
     <string name="uncomplited_filter">Невыполненные</string>
     <string name="share_todos">Поделиться</string>
+    <string name="cancel_btn">Отменить</string>
 </resources>

@@ -10,5 +10,6 @@ data class TodoListUiState(
     val showFilterDialog: Boolean = false,
     val showSearchDialog: Boolean = false,
     val selectedSortItem: SortItem? = null,
-    val isCompletedFilter: Boolean? = null
+    val isCompletedFilter: Boolean? = null,
+    val searchQuery: String = ""
 )
