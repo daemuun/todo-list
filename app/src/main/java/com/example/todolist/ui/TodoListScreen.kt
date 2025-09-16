@@ -590,19 +590,19 @@ fun SearchDialogLayout(
                     .padding(dimensionResource(R.dimen.padding_small))
             ) {
                 OutlinedButton(
-                    onClick = onSearch, modifier = Modifier.weight(1f)
+                    onClick = onSearchCancel, modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = stringResource(R.string.search_btn),
+                        text = stringResource(R.string.cancel_btn),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
                 Spacer(modifier = Modifier.width(20.dp))
                 OutlinedButton(
-                    onClick = onSearchCancel, modifier = Modifier.weight(1f)
+                    onClick = onSearch, modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = stringResource(R.string.cancel_btn),
+                        text = stringResource(R.string.search_btn),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
