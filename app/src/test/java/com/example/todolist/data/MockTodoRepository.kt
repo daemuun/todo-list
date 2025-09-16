@@ -38,11 +38,11 @@ class MockTodoRepository: TodoListRepository {
     }
 
     override fun getCompletedTodos(): Map<String, Todo> {
-        return todoList.filter { (_, todo) -> todo.completed }.toMap()
+        return mockTodoList.filter { (_, todo) -> todo.completed }.toMap()
     }
 
     override fun getUnCompletedTodos(): Map<String, Todo> {
-        return todoList.filter { (_, todo) -> !todo.completed }.toMap()
+        return mockTodoList.filter { (_, todo) -> !todo.completed }.toMap()
     }
 }
 
